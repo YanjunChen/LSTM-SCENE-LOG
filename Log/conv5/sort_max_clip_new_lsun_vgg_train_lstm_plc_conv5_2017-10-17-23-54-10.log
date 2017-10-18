@@ -1,0 +1,3738 @@
+I1017 23:54:10.510231 29508 caffe.cpp:218] Using GPUs 0
+I1017 23:54:10.626941 29508 caffe.cpp:223] GPU 0: GeForce GTX TITAN X
+I1017 23:54:11.215668 29508 solver.cpp:44] Initializing solver from parameters: 
+test_iter: 20
+test_interval: 1000
+base_lr: 0.0001
+display: 50
+max_iter: 10000000
+lr_policy: "step"
+gamma: 0.1
+momentum: 0.9
+weight_decay: 0.005
+stepsize: 30000
+solver_mode: GPU
+device_id: 0
+random_seed: 1701
+net: "./Def/deploy_vgg16_lsun_lstm_conv5_sort_max_clip.prototxt"
+train_state {
+  level: 0
+  stage: ""
+}
+test_state {
+  stage: "test-on-test"
+}
+average_loss: 100
+clip_gradients: 50
+iter_size: 4
+type: "SGD"
+I1017 23:54:11.215754 29508 solver.cpp:87] Creating training net from net file: ./Def/deploy_vgg16_lsun_lstm_conv5_sort_max_clip.prototxt
+I1017 23:54:11.216576 29508 net.cpp:294] The NetState phase (0) differed from the phase (1) specified by a rule in layer data
+I1017 23:54:11.216591 29508 net.cpp:294] The NetState phase (0) differed from the phase (1) specified by a rule in layer Silence
+I1017 23:54:11.216807 29508 net.cpp:51] Initializing net from parameters: 
+name: "VGG-Places365"
+state {
+  phase: TRAIN
+  level: 0
+  stage: ""
+}
+layer {
+  name: "data"
+  type: "ImageData"
+  top: "data"
+  top: "label"
+  include {
+    phase: TRAIN
+  }
+  transform_param {
+    mirror: true
+    crop_size: 224
+    mean_value: 104
+    mean_value: 117
+    mean_value: 123
+  }
+  image_data_param {
+    source: "../Data/lsun_train_list_12w.txt"
+    batch_size: 5
+    shuffle: true
+    new_height: 256
+    new_width: 256
+  }
+}
+layer {
+  name: "label_tran"
+  type: "Python"
+  bottom: "label"
+  top: "reshape-label"
+  top: "clip_markers"
+  python_param {
+    module: "data_preparation_sort_max_clip"
+    layer: "ReshapeLabel"
+  }
+}
+layer {
+  name: "conv1_1"
+  type: "Convolution"
+  bottom: "data"
+  top: "conv1_1"
+  convolution_param {
+    num_output: 64
+    pad: 1
+    kernel_size: 3
+  }
+}
+layer {
+  name: "relu1_1"
+  type: "ReLU"
+  bottom: "conv1_1"
+  top: "conv1_1"
+}
+layer {
+  name: "conv1_2"
+  type: "Convolution"
+  bottom: "conv1_1"
+  top: "conv1_2"
+  convolution_param {
+    num_output: 64
+    pad: 1
+    kernel_size: 3
+  }
+}
+layer {
+  name: "relu1_2"
+  type: "ReLU"
+  bottom: "conv1_2"
+  top: "conv1_2"
+}
+layer {
+  name: "pool1"
+  type: "Pooling"
+  bottom: "conv1_2"
+  top: "pool1"
+  pooling_param {
+    pool: MAX
+    kernel_size: 2
+    stride: 2
+  }
+}
+layer {
+  name: "conv2_1"
+  type: "Convolution"
+  bottom: "pool1"
+  top: "conv2_1"
+  convolution_param {
+    num_output: 128
+    pad: 1
+    kernel_size: 3
+  }
+}
+layer {
+  name: "relu2_1"
+  type: "ReLU"
+  bottom: "conv2_1"
+  top: "conv2_1"
+}
+layer {
+  name: "conv2_2"
+  type: "Convolution"
+  bottom: "conv2_1"
+  top: "conv2_2"
+  convolution_param {
+    num_output: 128
+    pad: 1
+    kernel_size: 3
+  }
+}
+layer {
+  name: "relu2_2"
+  type: "ReLU"
+  bottom: "conv2_2"
+  top: "conv2_2"
+}
+layer {
+  name: "pool2"
+  type: "Pooling"
+  bottom: "conv2_2"
+  top: "pool2"
+  pooling_param {
+    pool: MAX
+    kernel_size: 2
+    stride: 2
+  }
+}
+layer {
+  name: "conv3_1"
+  type: "Convolution"
+  bottom: "pool2"
+  top: "conv3_1"
+  convolution_param {
+    num_output: 256
+    pad: 1
+    kernel_size: 3
+  }
+}
+layer {
+  name: "relu3_1"
+  type: "ReLU"
+  bottom: "conv3_1"
+  top: "conv3_1"
+}
+layer {
+  name: "conv3_2"
+  type: "Convolution"
+  bottom: "conv3_1"
+  top: "conv3_2"
+  convolution_param {
+    num_output: 256
+    pad: 1
+    kernel_size: 3
+  }
+}
+layer {
+  name: "relu3_2"
+  type: "ReLU"
+  bottom: "conv3_2"
+  top: "conv3_2"
+}
+layer {
+  name: "conv3_3"
+  type: "Convolution"
+  bottom: "conv3_2"
+  top: "conv3_3"
+  convolution_param {
+    num_output: 256
+    pad: 1
+    kernel_size: 3
+  }
+}
+layer {
+  name: "relu3_3"
+  type: "ReLU"
+  bottom: "conv3_3"
+  top: "conv3_3"
+}
+layer {
+  name: "pool3"
+  type: "Pooling"
+  bottom: "conv3_3"
+  top: "pool3"
+  pooling_param {
+    pool: MAX
+    kernel_size: 2
+    stride: 2
+  }
+}
+layer {
+  name: "conv4_1"
+  type: "Convolution"
+  bottom: "pool3"
+  top: "conv4_1"
+  convolution_param {
+    num_output: 512
+    pad: 1
+    kernel_size: 3
+  }
+}
+layer {
+  name: "relu4_1"
+  type: "ReLU"
+  bottom: "conv4_1"
+  top: "conv4_1"
+}
+layer {
+  name: "conv4_2"
+  type: "Convolution"
+  bottom: "conv4_1"
+  top: "conv4_2"
+  convolution_param {
+    num_output: 512
+    pad: 1
+    kernel_size: 3
+  }
+}
+layer {
+  name: "relu4_2"
+  type: "ReLU"
+  bottom: "conv4_2"
+  top: "conv4_2"
+}
+layer {
+  name: "conv4_3"
+  type: "Convolution"
+  bottom: "conv4_2"
+  top: "conv4_3"
+  convolution_param {
+    num_output: 512
+    pad: 1
+    kernel_size: 3
+  }
+}
+layer {
+  name: "relu4_3"
+  type: "ReLU"
+  bottom: "conv4_3"
+  top: "conv4_3"
+}
+layer {
+  name: "pool4"
+  type: "Pooling"
+  bottom: "conv4_3"
+  top: "pool4"
+  pooling_param {
+    pool: MAX
+    kernel_size: 2
+    stride: 2
+  }
+}
+layer {
+  name: "conv5_1"
+  type: "Convolution"
+  bottom: "pool4"
+  top: "conv5_1"
+  convolution_param {
+    num_output: 512
+    pad: 1
+    kernel_size: 3
+  }
+}
+layer {
+  name: "relu5_1"
+  type: "ReLU"
+  bottom: "conv5_1"
+  top: "conv5_1"
+}
+layer {
+  name: "conv5_2"
+  type: "Convolution"
+  bottom: "conv5_1"
+  top: "conv5_2"
+  convolution_param {
+    num_output: 512
+    pad: 1
+    kernel_size: 3
+  }
+}
+layer {
+  name: "relu5_2"
+  type: "ReLU"
+  bottom: "conv5_2"
+  top: "conv5_2"
+}
+layer {
+  name: "conv5_3"
+  type: "Convolution"
+  bottom: "conv5_2"
+  top: "conv5_3"
+  convolution_param {
+    num_output: 512
+    pad: 1
+    kernel_size: 3
+  }
+}
+layer {
+  name: "relu5_3"
+  type: "ReLU"
+  bottom: "conv5_3"
+  top: "conv5_3"
+}
+layer {
+  name: "conv5_3_re"
+  type: "Reshape"
+  bottom: "conv5_3"
+  top: "conv5_3_re"
+  reshape_param {
+    shape {
+      dim: 0
+      dim: 0
+      dim: -1
+    }
+  }
+}
+layer {
+  name: "conv5_3_tran"
+  type: "Python"
+  bottom: "conv5_3_re"
+  top: "conv5_3_tran"
+  python_param {
+    module: "data_preparation_sort_max_clip"
+    layer: "DataTransposeSortMaxClip"
+  }
+}
+layer {
+  name: "lstm1"
+  type: "LSTM"
+  bottom: "conv5_3_tran"
+  bottom: "clip_markers"
+  top: "lstm1"
+  recurrent_param {
+    num_output: 512
+    weight_filler {
+      type: "uniform"
+      min: -0.01
+      max: 0.01
+    }
+    bias_filler {
+      type: "constant"
+      value: 0
+    }
+  }
+}
+layer {
+  name: "lstm1-drop"
+  type: "Dropout"
+  bottom: "lstm1"
+  top: "lstm1-drop"
+  dropout_param {
+    dropout_ratio: 0.5
+  }
+}
+layer {
+  name: "fc-final"
+  type: "InnerProduct"
+  bottom: "lstm1-drop"
+  top: "fc-final"
+  param {
+    lr_mult: 1
+    decay_mult: 1
+  }
+  param {
+    lr_mult: 2
+    decay_mult: 0
+  }
+  inner_product_param {
+    num_output: 10
+    weight_filler {
+      type: "gaussian"
+      std: 0.01
+    }
+    bias_filler {
+      type: "constant"
+      value: 0
+    }
+    axis: 2
+  }
+}
+layer {
+  name: "loss"
+  type: "SoftmaxWithLoss"
+  bottom: "fc-final"
+  bottom: "reshape-label"
+  top: "loss"
+  softmax_param {
+    axis: 2
+  }
+}
+layer {
+  name: "accuracy"
+  type: "Accuracy"
+  bottom: "fc-final"
+  bottom: "reshape-label"
+  top: "accuracy"
+  accuracy_param {
+    axis: 2
+  }
+}
+I1017 23:54:11.217016 29508 layer_factory.hpp:77] Creating layer data
+I1017 23:54:11.217072 29508 net.cpp:84] Creating Layer data
+I1017 23:54:11.217088 29508 net.cpp:380] data -> data
+I1017 23:54:11.217139 29508 net.cpp:380] data -> label
+I1017 23:54:11.217175 29508 image_data_layer.cpp:38] Opening file ../Data/lsun_train_list_12w.txt
+I1017 23:54:11.727715 29508 image_data_layer.cpp:53] Shuffling data
+I1017 23:54:12.002112 29508 image_data_layer.cpp:63] A total of 1200000 images.
+I1017 23:54:12.006790 29508 image_data_layer.cpp:90] output data size: 5,3,224,224
+I1017 23:54:12.017467 29508 net.cpp:122] Setting up data
+I1017 23:54:12.017506 29508 net.cpp:129] Top shape: 5 3 224 224 (752640)
+I1017 23:54:12.017514 29508 net.cpp:129] Top shape: 5 (5)
+I1017 23:54:12.017518 29508 net.cpp:137] Memory required for data: 3010580
+I1017 23:54:12.017630 29508 layer_factory.hpp:77] Creating layer label_tran
+I1017 23:54:12.617173 29508 net.cpp:84] Creating Layer label_tran
+I1017 23:54:12.617233 29508 net.cpp:406] label_tran <- label
+I1017 23:54:12.617257 29508 net.cpp:380] label_tran -> reshape-label
+I1017 23:54:12.617271 29508 net.cpp:380] label_tran -> clip_markers
+I1017 23:54:12.617583 29508 net.cpp:122] Setting up label_tran
+I1017 23:54:12.617616 29508 net.cpp:129] Top shape: 8 5 (40)
+I1017 23:54:12.617622 29508 net.cpp:129] Top shape: 8 5 (40)
+I1017 23:54:12.617627 29508 net.cpp:137] Memory required for data: 3010900
+I1017 23:54:12.617632 29508 layer_factory.hpp:77] Creating layer reshape-label_label_tran_0_split
+I1017 23:54:12.617651 29508 net.cpp:84] Creating Layer reshape-label_label_tran_0_split
+I1017 23:54:12.617656 29508 net.cpp:406] reshape-label_label_tran_0_split <- reshape-label
+I1017 23:54:12.617662 29508 net.cpp:380] reshape-label_label_tran_0_split -> reshape-label_label_tran_0_split_0
+I1017 23:54:12.617671 29508 net.cpp:380] reshape-label_label_tran_0_split -> reshape-label_label_tran_0_split_1
+I1017 23:54:12.617707 29508 net.cpp:122] Setting up reshape-label_label_tran_0_split
+I1017 23:54:12.617715 29508 net.cpp:129] Top shape: 8 5 (40)
+I1017 23:54:12.617719 29508 net.cpp:129] Top shape: 8 5 (40)
+I1017 23:54:12.617723 29508 net.cpp:137] Memory required for data: 3011220
+I1017 23:54:12.617727 29508 layer_factory.hpp:77] Creating layer conv1_1
+I1017 23:54:12.617748 29508 net.cpp:84] Creating Layer conv1_1
+I1017 23:54:12.617753 29508 net.cpp:406] conv1_1 <- data
+I1017 23:54:12.617760 29508 net.cpp:380] conv1_1 -> conv1_1
+I1017 23:54:12.619616 29508 net.cpp:122] Setting up conv1_1
+I1017 23:54:12.619642 29508 net.cpp:129] Top shape: 5 64 224 224 (16056320)
+I1017 23:54:12.619647 29508 net.cpp:137] Memory required for data: 67236500
+I1017 23:54:12.619671 29508 layer_factory.hpp:77] Creating layer relu1_1
+I1017 23:54:12.619683 29508 net.cpp:84] Creating Layer relu1_1
+I1017 23:54:12.619688 29508 net.cpp:406] relu1_1 <- conv1_1
+I1017 23:54:12.619693 29508 net.cpp:367] relu1_1 -> conv1_1 (in-place)
+I1017 23:54:12.619705 29508 net.cpp:122] Setting up relu1_1
+I1017 23:54:12.619711 29508 net.cpp:129] Top shape: 5 64 224 224 (16056320)
+I1017 23:54:12.619714 29508 net.cpp:137] Memory required for data: 131461780
+I1017 23:54:12.619719 29508 layer_factory.hpp:77] Creating layer conv1_2
+I1017 23:54:12.619727 29508 net.cpp:84] Creating Layer conv1_2
+I1017 23:54:12.619731 29508 net.cpp:406] conv1_2 <- conv1_1
+I1017 23:54:12.619737 29508 net.cpp:380] conv1_2 -> conv1_2
+I1017 23:54:12.620033 29508 net.cpp:122] Setting up conv1_2
+I1017 23:54:12.620046 29508 net.cpp:129] Top shape: 5 64 224 224 (16056320)
+I1017 23:54:12.620051 29508 net.cpp:137] Memory required for data: 195687060
+I1017 23:54:12.620060 29508 layer_factory.hpp:77] Creating layer relu1_2
+I1017 23:54:12.620069 29508 net.cpp:84] Creating Layer relu1_2
+I1017 23:54:12.620074 29508 net.cpp:406] relu1_2 <- conv1_2
+I1017 23:54:12.620080 29508 net.cpp:367] relu1_2 -> conv1_2 (in-place)
+I1017 23:54:12.620087 29508 net.cpp:122] Setting up relu1_2
+I1017 23:54:12.620093 29508 net.cpp:129] Top shape: 5 64 224 224 (16056320)
+I1017 23:54:12.620097 29508 net.cpp:137] Memory required for data: 259912340
+I1017 23:54:12.620101 29508 layer_factory.hpp:77] Creating layer pool1
+I1017 23:54:12.620112 29508 net.cpp:84] Creating Layer pool1
+I1017 23:54:12.620116 29508 net.cpp:406] pool1 <- conv1_2
+I1017 23:54:12.620122 29508 net.cpp:380] pool1 -> pool1
+I1017 23:54:12.620172 29508 net.cpp:122] Setting up pool1
+I1017 23:54:12.620182 29508 net.cpp:129] Top shape: 5 64 112 112 (4014080)
+I1017 23:54:12.620187 29508 net.cpp:137] Memory required for data: 275968660
+I1017 23:54:12.620192 29508 layer_factory.hpp:77] Creating layer conv2_1
+I1017 23:54:12.620200 29508 net.cpp:84] Creating Layer conv2_1
+I1017 23:54:12.620205 29508 net.cpp:406] conv2_1 <- pool1
+I1017 23:54:12.620213 29508 net.cpp:380] conv2_1 -> conv2_1
+I1017 23:54:12.621947 29508 net.cpp:122] Setting up conv2_1
+I1017 23:54:12.621971 29508 net.cpp:129] Top shape: 5 128 112 112 (8028160)
+I1017 23:54:12.621976 29508 net.cpp:137] Memory required for data: 308081300
+I1017 23:54:12.621986 29508 layer_factory.hpp:77] Creating layer relu2_1
+I1017 23:54:12.621995 29508 net.cpp:84] Creating Layer relu2_1
+I1017 23:54:12.622000 29508 net.cpp:406] relu2_1 <- conv2_1
+I1017 23:54:12.622006 29508 net.cpp:367] relu2_1 -> conv2_1 (in-place)
+I1017 23:54:12.622014 29508 net.cpp:122] Setting up relu2_1
+I1017 23:54:12.622020 29508 net.cpp:129] Top shape: 5 128 112 112 (8028160)
+I1017 23:54:12.622023 29508 net.cpp:137] Memory required for data: 340193940
+I1017 23:54:12.622027 29508 layer_factory.hpp:77] Creating layer conv2_2
+I1017 23:54:12.622035 29508 net.cpp:84] Creating Layer conv2_2
+I1017 23:54:12.622040 29508 net.cpp:406] conv2_2 <- conv2_1
+I1017 23:54:12.622045 29508 net.cpp:380] conv2_2 -> conv2_2
+I1017 23:54:12.622321 29508 net.cpp:122] Setting up conv2_2
+I1017 23:54:12.622344 29508 net.cpp:129] Top shape: 5 128 112 112 (8028160)
+I1017 23:54:12.622347 29508 net.cpp:137] Memory required for data: 372306580
+I1017 23:54:12.622366 29508 layer_factory.hpp:77] Creating layer relu2_2
+I1017 23:54:12.622375 29508 net.cpp:84] Creating Layer relu2_2
+I1017 23:54:12.622378 29508 net.cpp:406] relu2_2 <- conv2_2
+I1017 23:54:12.622385 29508 net.cpp:367] relu2_2 -> conv2_2 (in-place)
+I1017 23:54:12.622390 29508 net.cpp:122] Setting up relu2_2
+I1017 23:54:12.622395 29508 net.cpp:129] Top shape: 5 128 112 112 (8028160)
+I1017 23:54:12.622400 29508 net.cpp:137] Memory required for data: 404419220
+I1017 23:54:12.622403 29508 layer_factory.hpp:77] Creating layer pool2
+I1017 23:54:12.622409 29508 net.cpp:84] Creating Layer pool2
+I1017 23:54:12.622412 29508 net.cpp:406] pool2 <- conv2_2
+I1017 23:54:12.622418 29508 net.cpp:380] pool2 -> pool2
+I1017 23:54:12.622450 29508 net.cpp:122] Setting up pool2
+I1017 23:54:12.622458 29508 net.cpp:129] Top shape: 5 128 56 56 (2007040)
+I1017 23:54:12.622462 29508 net.cpp:137] Memory required for data: 412447380
+I1017 23:54:12.622467 29508 layer_factory.hpp:77] Creating layer conv3_1
+I1017 23:54:12.622474 29508 net.cpp:84] Creating Layer conv3_1
+I1017 23:54:12.622478 29508 net.cpp:406] conv3_1 <- pool2
+I1017 23:54:12.622484 29508 net.cpp:380] conv3_1 -> conv3_1
+I1017 23:54:12.623693 29508 net.cpp:122] Setting up conv3_1
+I1017 23:54:12.623718 29508 net.cpp:129] Top shape: 5 256 56 56 (4014080)
+I1017 23:54:12.623723 29508 net.cpp:137] Memory required for data: 428503700
+I1017 23:54:12.623734 29508 layer_factory.hpp:77] Creating layer relu3_1
+I1017 23:54:12.623741 29508 net.cpp:84] Creating Layer relu3_1
+I1017 23:54:12.623745 29508 net.cpp:406] relu3_1 <- conv3_1
+I1017 23:54:12.623751 29508 net.cpp:367] relu3_1 -> conv3_1 (in-place)
+I1017 23:54:12.623759 29508 net.cpp:122] Setting up relu3_1
+I1017 23:54:12.623764 29508 net.cpp:129] Top shape: 5 256 56 56 (4014080)
+I1017 23:54:12.623767 29508 net.cpp:137] Memory required for data: 444560020
+I1017 23:54:12.623773 29508 layer_factory.hpp:77] Creating layer conv3_2
+I1017 23:54:12.623780 29508 net.cpp:84] Creating Layer conv3_2
+I1017 23:54:12.623785 29508 net.cpp:406] conv3_2 <- conv3_1
+I1017 23:54:12.623790 29508 net.cpp:380] conv3_2 -> conv3_2
+I1017 23:54:12.625587 29508 net.cpp:122] Setting up conv3_2
+I1017 23:54:12.625612 29508 net.cpp:129] Top shape: 5 256 56 56 (4014080)
+I1017 23:54:12.625617 29508 net.cpp:137] Memory required for data: 460616340
+I1017 23:54:12.625625 29508 layer_factory.hpp:77] Creating layer relu3_2
+I1017 23:54:12.625633 29508 net.cpp:84] Creating Layer relu3_2
+I1017 23:54:12.625638 29508 net.cpp:406] relu3_2 <- conv3_2
+I1017 23:54:12.625646 29508 net.cpp:367] relu3_2 -> conv3_2 (in-place)
+I1017 23:54:12.625653 29508 net.cpp:122] Setting up relu3_2
+I1017 23:54:12.625659 29508 net.cpp:129] Top shape: 5 256 56 56 (4014080)
+I1017 23:54:12.625663 29508 net.cpp:137] Memory required for data: 476672660
+I1017 23:54:12.625666 29508 layer_factory.hpp:77] Creating layer conv3_3
+I1017 23:54:12.625675 29508 net.cpp:84] Creating Layer conv3_3
+I1017 23:54:12.625679 29508 net.cpp:406] conv3_3 <- conv3_2
+I1017 23:54:12.625686 29508 net.cpp:380] conv3_3 -> conv3_3
+I1017 23:54:12.627457 29508 net.cpp:122] Setting up conv3_3
+I1017 23:54:12.627483 29508 net.cpp:129] Top shape: 5 256 56 56 (4014080)
+I1017 23:54:12.627488 29508 net.cpp:137] Memory required for data: 492728980
+I1017 23:54:12.627496 29508 layer_factory.hpp:77] Creating layer relu3_3
+I1017 23:54:12.627504 29508 net.cpp:84] Creating Layer relu3_3
+I1017 23:54:12.627509 29508 net.cpp:406] relu3_3 <- conv3_3
+I1017 23:54:12.627516 29508 net.cpp:367] relu3_3 -> conv3_3 (in-place)
+I1017 23:54:12.627522 29508 net.cpp:122] Setting up relu3_3
+I1017 23:54:12.627528 29508 net.cpp:129] Top shape: 5 256 56 56 (4014080)
+I1017 23:54:12.627532 29508 net.cpp:137] Memory required for data: 508785300
+I1017 23:54:12.627535 29508 layer_factory.hpp:77] Creating layer pool3
+I1017 23:54:12.627544 29508 net.cpp:84] Creating Layer pool3
+I1017 23:54:12.627548 29508 net.cpp:406] pool3 <- conv3_3
+I1017 23:54:12.627555 29508 net.cpp:380] pool3 -> pool3
+I1017 23:54:12.627593 29508 net.cpp:122] Setting up pool3
+I1017 23:54:12.627601 29508 net.cpp:129] Top shape: 5 256 28 28 (1003520)
+I1017 23:54:12.627605 29508 net.cpp:137] Memory required for data: 512799380
+I1017 23:54:12.627609 29508 layer_factory.hpp:77] Creating layer conv4_1
+I1017 23:54:12.627619 29508 net.cpp:84] Creating Layer conv4_1
+I1017 23:54:12.627622 29508 net.cpp:406] conv4_1 <- pool3
+I1017 23:54:12.627630 29508 net.cpp:380] conv4_1 -> conv4_1
+I1017 23:54:12.631315 29508 net.cpp:122] Setting up conv4_1
+I1017 23:54:12.631343 29508 net.cpp:129] Top shape: 5 512 28 28 (2007040)
+I1017 23:54:12.631348 29508 net.cpp:137] Memory required for data: 520827540
+I1017 23:54:12.631356 29508 layer_factory.hpp:77] Creating layer relu4_1
+I1017 23:54:12.631363 29508 net.cpp:84] Creating Layer relu4_1
+I1017 23:54:12.631368 29508 net.cpp:406] relu4_1 <- conv4_1
+I1017 23:54:12.631374 29508 net.cpp:367] relu4_1 -> conv4_1 (in-place)
+I1017 23:54:12.631381 29508 net.cpp:122] Setting up relu4_1
+I1017 23:54:12.631387 29508 net.cpp:129] Top shape: 5 512 28 28 (2007040)
+I1017 23:54:12.631392 29508 net.cpp:137] Memory required for data: 528855700
+I1017 23:54:12.631395 29508 layer_factory.hpp:77] Creating layer conv4_2
+I1017 23:54:12.631404 29508 net.cpp:84] Creating Layer conv4_2
+I1017 23:54:12.631408 29508 net.cpp:406] conv4_2 <- conv4_1
+I1017 23:54:12.631417 29508 net.cpp:380] conv4_2 -> conv4_2
+I1017 23:54:12.637286 29508 net.cpp:122] Setting up conv4_2
+I1017 23:54:12.637320 29508 net.cpp:129] Top shape: 5 512 28 28 (2007040)
+I1017 23:54:12.637325 29508 net.cpp:137] Memory required for data: 536883860
+I1017 23:54:12.637341 29508 layer_factory.hpp:77] Creating layer relu4_2
+I1017 23:54:12.637349 29508 net.cpp:84] Creating Layer relu4_2
+I1017 23:54:12.637356 29508 net.cpp:406] relu4_2 <- conv4_2
+I1017 23:54:12.637362 29508 net.cpp:367] relu4_2 -> conv4_2 (in-place)
+I1017 23:54:12.637370 29508 net.cpp:122] Setting up relu4_2
+I1017 23:54:12.637375 29508 net.cpp:129] Top shape: 5 512 28 28 (2007040)
+I1017 23:54:12.637379 29508 net.cpp:137] Memory required for data: 544912020
+I1017 23:54:12.637385 29508 layer_factory.hpp:77] Creating layer conv4_3
+I1017 23:54:12.637394 29508 net.cpp:84] Creating Layer conv4_3
+I1017 23:54:12.637399 29508 net.cpp:406] conv4_3 <- conv4_2
+I1017 23:54:12.637405 29508 net.cpp:380] conv4_3 -> conv4_3
+I1017 23:54:12.643468 29508 net.cpp:122] Setting up conv4_3
+I1017 23:54:12.643493 29508 net.cpp:129] Top shape: 5 512 28 28 (2007040)
+I1017 23:54:12.643498 29508 net.cpp:137] Memory required for data: 552940180
+I1017 23:54:12.643507 29508 layer_factory.hpp:77] Creating layer relu4_3
+I1017 23:54:12.643517 29508 net.cpp:84] Creating Layer relu4_3
+I1017 23:54:12.643522 29508 net.cpp:406] relu4_3 <- conv4_3
+I1017 23:54:12.643533 29508 net.cpp:367] relu4_3 -> conv4_3 (in-place)
+I1017 23:54:12.643548 29508 net.cpp:122] Setting up relu4_3
+I1017 23:54:12.643554 29508 net.cpp:129] Top shape: 5 512 28 28 (2007040)
+I1017 23:54:12.643558 29508 net.cpp:137] Memory required for data: 560968340
+I1017 23:54:12.643563 29508 layer_factory.hpp:77] Creating layer pool4
+I1017 23:54:12.643571 29508 net.cpp:84] Creating Layer pool4
+I1017 23:54:12.643576 29508 net.cpp:406] pool4 <- conv4_3
+I1017 23:54:12.643582 29508 net.cpp:380] pool4 -> pool4
+I1017 23:54:12.643625 29508 net.cpp:122] Setting up pool4
+I1017 23:54:12.643635 29508 net.cpp:129] Top shape: 5 512 14 14 (501760)
+I1017 23:54:12.643638 29508 net.cpp:137] Memory required for data: 562975380
+I1017 23:54:12.643642 29508 layer_factory.hpp:77] Creating layer conv5_1
+I1017 23:54:12.643652 29508 net.cpp:84] Creating Layer conv5_1
+I1017 23:54:12.643657 29508 net.cpp:406] conv5_1 <- pool4
+I1017 23:54:12.643663 29508 net.cpp:380] conv5_1 -> conv5_1
+I1017 23:54:12.649806 29508 net.cpp:122] Setting up conv5_1
+I1017 23:54:12.649832 29508 net.cpp:129] Top shape: 5 512 14 14 (501760)
+I1017 23:54:12.649837 29508 net.cpp:137] Memory required for data: 564982420
+I1017 23:54:12.649847 29508 layer_factory.hpp:77] Creating layer relu5_1
+I1017 23:54:12.649857 29508 net.cpp:84] Creating Layer relu5_1
+I1017 23:54:12.649863 29508 net.cpp:406] relu5_1 <- conv5_1
+I1017 23:54:12.649871 29508 net.cpp:367] relu5_1 -> conv5_1 (in-place)
+I1017 23:54:12.649883 29508 net.cpp:122] Setting up relu5_1
+I1017 23:54:12.649888 29508 net.cpp:129] Top shape: 5 512 14 14 (501760)
+I1017 23:54:12.649893 29508 net.cpp:137] Memory required for data: 566989460
+I1017 23:54:12.649896 29508 layer_factory.hpp:77] Creating layer conv5_2
+I1017 23:54:12.649904 29508 net.cpp:84] Creating Layer conv5_2
+I1017 23:54:12.649909 29508 net.cpp:406] conv5_2 <- conv5_1
+I1017 23:54:12.649917 29508 net.cpp:380] conv5_2 -> conv5_2
+I1017 23:54:12.672197 29508 net.cpp:122] Setting up conv5_2
+I1017 23:54:12.672235 29508 net.cpp:129] Top shape: 5 512 14 14 (501760)
+I1017 23:54:12.672240 29508 net.cpp:137] Memory required for data: 568996500
+I1017 23:54:12.672252 29508 layer_factory.hpp:77] Creating layer relu5_2
+I1017 23:54:12.672267 29508 net.cpp:84] Creating Layer relu5_2
+I1017 23:54:12.672276 29508 net.cpp:406] relu5_2 <- conv5_2
+I1017 23:54:12.672287 29508 net.cpp:367] relu5_2 -> conv5_2 (in-place)
+I1017 23:54:12.672300 29508 net.cpp:122] Setting up relu5_2
+I1017 23:54:12.672312 29508 net.cpp:129] Top shape: 5 512 14 14 (501760)
+I1017 23:54:12.672317 29508 net.cpp:137] Memory required for data: 571003540
+I1017 23:54:12.672322 29508 layer_factory.hpp:77] Creating layer conv5_3
+I1017 23:54:12.672330 29508 net.cpp:84] Creating Layer conv5_3
+I1017 23:54:12.672335 29508 net.cpp:406] conv5_3 <- conv5_2
+I1017 23:54:12.672343 29508 net.cpp:380] conv5_3 -> conv5_3
+I1017 23:54:12.678043 29508 net.cpp:122] Setting up conv5_3
+I1017 23:54:12.678076 29508 net.cpp:129] Top shape: 5 512 14 14 (501760)
+I1017 23:54:12.678081 29508 net.cpp:137] Memory required for data: 573010580
+I1017 23:54:12.678091 29508 layer_factory.hpp:77] Creating layer relu5_3
+I1017 23:54:12.678118 29508 net.cpp:84] Creating Layer relu5_3
+I1017 23:54:12.678124 29508 net.cpp:406] relu5_3 <- conv5_3
+I1017 23:54:12.678133 29508 net.cpp:367] relu5_3 -> conv5_3 (in-place)
+I1017 23:54:12.678141 29508 net.cpp:122] Setting up relu5_3
+I1017 23:54:12.678148 29508 net.cpp:129] Top shape: 5 512 14 14 (501760)
+I1017 23:54:12.678153 29508 net.cpp:137] Memory required for data: 575017620
+I1017 23:54:12.678158 29508 layer_factory.hpp:77] Creating layer conv5_3_re
+I1017 23:54:12.678172 29508 net.cpp:84] Creating Layer conv5_3_re
+I1017 23:54:12.678177 29508 net.cpp:406] conv5_3_re <- conv5_3
+I1017 23:54:12.678185 29508 net.cpp:380] conv5_3_re -> conv5_3_re
+I1017 23:54:12.678233 29508 net.cpp:122] Setting up conv5_3_re
+I1017 23:54:12.678247 29508 net.cpp:129] Top shape: 5 512 196 (501760)
+I1017 23:54:12.678252 29508 net.cpp:137] Memory required for data: 577024660
+I1017 23:54:12.678256 29508 layer_factory.hpp:77] Creating layer conv5_3_tran
+I1017 23:54:12.678326 29508 net.cpp:84] Creating Layer conv5_3_tran
+I1017 23:54:12.678335 29508 net.cpp:406] conv5_3_tran <- conv5_3_re
+I1017 23:54:12.678342 29508 net.cpp:380] conv5_3_tran -> conv5_3_tran
+I1017 23:54:12.679724 29508 net.cpp:122] Setting up conv5_3_tran
+I1017 23:54:12.679741 29508 net.cpp:129] Top shape: 8 5 512 (20480)
+I1017 23:54:12.679746 29508 net.cpp:137] Memory required for data: 577106580
+I1017 23:54:12.679750 29508 layer_factory.hpp:77] Creating layer lstm1
+I1017 23:54:12.679767 29508 net.cpp:84] Creating Layer lstm1
+I1017 23:54:12.679774 29508 net.cpp:406] lstm1 <- conv5_3_tran
+I1017 23:54:12.679780 29508 net.cpp:406] lstm1 <- clip_markers
+I1017 23:54:12.679787 29508 net.cpp:380] lstm1 -> lstm1
+I1017 23:54:12.679803 29508 recurrent_layer.cpp:20] Initializing recurrent layer: assuming input batch contains 8 timesteps of 5 independent streams.
+I1017 23:54:12.680366 29508 net.cpp:51] Initializing net from parameters: 
+layer {
+  name: "lstm1_"
+  type: "Input"
+  top: "x"
+  top: "cont"
+  input_param {
+    shape {
+      dim: 8
+      dim: 5
+      dim: 512
+    }
+    shape {
+      dim: 8
+      dim: 5
+    }
+  }
+}
+layer {
+  name: "lstm1_"
+  type: "Input"
+  top: "c_0"
+  top: "h_0"
+  input_param {
+    shape {
+      dim: 1
+      dim: 5
+      dim: 512
+    }
+    shape {
+      dim: 1
+      dim: 5
+      dim: 512
+    }
+  }
+}
+layer {
+  name: "lstm1_cont_slice"
+  type: "Slice"
+  bottom: "cont"
+  top: "cont_1"
+  top: "cont_2"
+  top: "cont_3"
+  top: "cont_4"
+  top: "cont_5"
+  top: "cont_6"
+  top: "cont_7"
+  top: "cont_8"
+  slice_param {
+    axis: 0
+  }
+}
+layer {
+  name: "lstm1_x_transform"
+  type: "InnerProduct"
+  bottom: "x"
+  top: "W_xc_x"
+  param {
+    name: "W_xc"
+  }
+  param {
+    name: "b_c"
+  }
+  propagate_down: true
+  inner_product_param {
+    num_output: 2048
+    bias_term: true
+    weight_filler {
+      type: "uniform"
+      min: -0.01
+      max: 0.01
+    }
+    bias_filler {
+      type: "constant"
+      value: 0
+    }
+    axis: 2
+  }
+}
+layer {
+  name: "lstm1_W_xc_x_slice"
+  type: "Slice"
+  bottom: "W_xc_x"
+  top: "W_xc_x_1"
+  top: "W_xc_x_2"
+  top: "W_xc_x_3"
+  top: "W_xc_x_4"
+  top: "W_xc_x_5"
+  top: "W_xc_x_6"
+  top: "W_xc_x_7"
+  top: "W_xc_x_8"
+  slice_param {
+    axis: 0
+  }
+}
+layer {
+  name: "lstm1_h_conted_0"
+  type: "Scale"
+  bottom: "h_0"
+  bottom: "cont_1"
+  top: "h_conted_0"
+  scale_param {
+    axis: 0
+  }
+}
+layer {
+  name: "lstm1_transform_1"
+  type: "InnerProduct"
+  bottom: "h_conted_0"
+  top: "W_hc_h_0"
+  param {
+    name: "W_hc"
+  }
+  inner_product_param {
+    num_output: 2048
+    bias_term: false
+    weight_filler {
+      type: "uniform"
+      min: -0.01
+      max: 0.01
+    }
+    axis: 2
+  }
+}
+layer {
+  name: "lstm1_gate_input_1"
+  type: "Eltwise"
+  bottom: "W_hc_h_0"
+  bottom: "W_xc_x_1"
+  top: "gate_input_1"
+  eltwise_param {
+    operation: SUM
+  }
+}
+layer {
+  name: "lstm1_unit_1"
+  type: "LSTMUnit"
+  bottom: "c_0"
+  bottom: "gate_input_1"
+  bottom: "cont_1"
+  top: "c_1"
+  top: "h_1"
+}
+layer {
+  name: "lstm1_h_conted_1"
+  type: "Scale"
+  bottom: "h_1"
+  bottom: "cont_2"
+  top: "h_conted_1"
+  scale_param {
+    axis: 0
+  }
+}
+layer {
+  name: "lstm1_transform_2"
+  type: "InnerProduct"
+  bottom: "h_conted_1"
+  top: "W_hc_h_1"
+  param {
+    name: "W_hc"
+  }
+  inner_product_param {
+    num_output: 2048
+    bias_term: false
+    weight_filler {
+      type: "uniform"
+      min: -0.01
+      max: 0.01
+    }
+    axis: 2
+  }
+}
+layer {
+  name: "lstm1_gate_input_2"
+  type: "Eltwise"
+  bottom: "W_hc_h_1"
+  bottom: "W_xc_x_2"
+  top: "gate_input_2"
+  eltwise_param {
+    operation: SUM
+  }
+}
+layer {
+  name: "lstm1_unit_2"
+  type: "LSTMUnit"
+  bottom: "c_1"
+  bottom: "gate_input_2"
+  bottom: "cont_2"
+  top: "c_2"
+  top: "h_2"
+}
+layer {
+  name: "lstm1_h_conted_2"
+  type: "Scale"
+  bottom: "h_2"
+  bottom: "cont_3"
+  top: "h_conted_2"
+  scale_param {
+    axis: 0
+  }
+}
+layer {
+  name: "lstm1_transform_3"
+  type: "InnerProduct"
+  bottom: "h_conted_2"
+  top: "W_hc_h_2"
+  param {
+    name: "W_hc"
+  }
+  inner_product_param {
+    num_output: 2048
+    bias_term: false
+    weight_filler {
+      type: "uniform"
+      min: -0.01
+      max: 0.01
+    }
+    axis: 2
+  }
+}
+layer {
+  name: "lstm1_gate_input_3"
+  type: "Eltwise"
+  bottom: "W_hc_h_2"
+  bottom: "W_xc_x_3"
+  top: "gate_input_3"
+  eltwise_param {
+    operation: SUM
+  }
+}
+layer {
+  name: "lstm1_unit_3"
+  type: "LSTMUnit"
+  bottom: "c_2"
+  bottom: "gate_input_3"
+  bottom: "cont_3"
+  top: "c_3"
+  top: "h_3"
+}
+layer {
+  name: "lstm1_h_conted_3"
+  type: "Scale"
+  bottom: "h_3"
+  bottom: "cont_4"
+  top: "h_conted_3"
+  scale_param {
+    axis: 0
+  }
+}
+layer {
+  name: "lstm1_transform_4"
+  type: "InnerProduct"
+  bottom: "h_conted_3"
+  top: "W_hc_h_3"
+  param {
+    name: "W_hc"
+  }
+  inner_product_param {
+    num_output: 2048
+    bias_term: false
+    weight_filler {
+      type: "uniform"
+      min: -0.01
+      max: 0.01
+    }
+    axis: 2
+  }
+}
+layer {
+  name: "lstm1_gate_input_4"
+  type: "Eltwise"
+  bottom: "W_hc_h_3"
+  bottom: "W_xc_x_4"
+  top: "gate_input_4"
+  eltwise_param {
+    operation: SUM
+  }
+}
+layer {
+  name: "lstm1_unit_4"
+  type: "LSTMUnit"
+  bottom: "c_3"
+  bottom: "gate_input_4"
+  bottom: "cont_4"
+  top: "c_4"
+  top: "h_4"
+}
+layer {
+  name: "lstm1_h_conted_4"
+  type: "Scale"
+  bottom: "h_4"
+  bottom: "cont_5"
+  top: "h_conted_4"
+  scale_param {
+    axis: 0
+  }
+}
+layer {
+  name: "lstm1_transform_5"
+  type: "InnerProduct"
+  bottom: "h_conted_4"
+  top: "W_hc_h_4"
+  param {
+    name: "W_hc"
+  }
+  inner_product_param {
+    num_output: 2048
+    bias_term: false
+    weight_filler {
+      type: "uniform"
+      min: -0.01
+      max: 0.01
+    }
+    axis: 2
+  }
+}
+layer {
+  name: "lstm1_gate_input_5"
+  type: "Eltwise"
+  bottom: "W_hc_h_4"
+  bottom: "W_xc_x_5"
+  top: "gate_input_5"
+  eltwise_param {
+    operation: SUM
+  }
+}
+layer {
+  name: "lstm1_unit_5"
+  type: "LSTMUnit"
+  bottom: "c_4"
+  bottom: "gate_input_5"
+  bottom: "cont_5"
+  top: "c_5"
+  top: "h_5"
+}
+layer {
+  name: "lstm1_h_conted_5"
+  type: "Scale"
+  bottom: "h_5"
+  bottom: "cont_6"
+  top: "h_conted_5"
+  scale_param {
+    axis: 0
+  }
+}
+layer {
+  name: "lstm1_transform_6"
+  type: "InnerProduct"
+  bottom: "h_conted_5"
+  top: "W_hc_h_5"
+  param {
+    name: "W_hc"
+  }
+  inner_product_param {
+    num_output: 2048
+    bias_term: false
+    weight_filler {
+      type: "uniform"
+      min: -0.01
+      max: 0.01
+    }
+    axis: 2
+  }
+}
+layer {
+  name: "lstm1_gate_input_6"
+  type: "Eltwise"
+  bottom: "W_hc_h_5"
+  bottom: "W_xc_x_6"
+  top: "gate_input_6"
+  eltwise_param {
+    operation: SUM
+  }
+}
+layer {
+  name: "lstm1_unit_6"
+  type: "LSTMUnit"
+  bottom: "c_5"
+  bottom: "gate_input_6"
+  bottom: "cont_6"
+  top: "c_6"
+  top: "h_6"
+}
+layer {
+  name: "lstm1_h_conted_6"
+  type: "Scale"
+  bottom: "h_6"
+  bottom: "cont_7"
+  top: "h_conted_6"
+  scale_param {
+    axis: 0
+  }
+}
+layer {
+  name: "lstm1_transform_7"
+  type: "InnerProduct"
+  bottom: "h_conted_6"
+  top: "W_hc_h_6"
+  param {
+    name: "W_hc"
+  }
+  inner_product_param {
+    num_output: 2048
+    bias_term: false
+    weight_filler {
+      type: "uniform"
+      min: -0.01
+      max: 0.01
+    }
+    axis: 2
+  }
+}
+layer {
+  name: "lstm1_gate_input_7"
+  type: "Eltwise"
+  bottom: "W_hc_h_6"
+  bottom: "W_xc_x_7"
+  top: "gate_input_7"
+  eltwise_param {
+    operation: SUM
+  }
+}
+layer {
+  name: "lstm1_unit_7"
+  type: "LSTMUnit"
+  bottom: "c_6"
+  bottom: "gate_input_7"
+  bottom: "cont_7"
+  top: "c_7"
+  top: "h_7"
+}
+layer {
+  name: "lstm1_h_conted_7"
+  type: "Scale"
+  bottom: "h_7"
+  bottom: "cont_8"
+  top: "h_conted_7"
+  scale_param {
+    axis: 0
+  }
+}
+layer {
+  name: "lstm1_transform_8"
+  type: "InnerProduct"
+  bottom: "h_conted_7"
+  top: "W_hc_h_7"
+  param {
+    name: "W_hc"
+  }
+  inner_product_param {
+    num_output: 2048
+    bias_term: false
+    weight_filler {
+      type: "uniform"
+      min: -0.01
+      max: 0.01
+    }
+    axis: 2
+  }
+}
+layer {
+  name: "lstm1_gate_input_8"
+  type: "Eltwise"
+  bottom: "W_hc_h_7"
+  bottom: "W_xc_x_8"
+  top: "gate_input_8"
+  eltwise_param {
+    operation: SUM
+  }
+}
+layer {
+  name: "lstm1_unit_8"
+  type: "LSTMUnit"
+  bottom: "c_7"
+  bottom: "gate_input_8"
+  bottom: "cont_8"
+  top: "c_8"
+  top: "h_8"
+}
+layer {
+  name: "lstm1_"
+  type: "Split"
+  bottom: "c_8"
+  top: "c_T"
+}
+layer {
+  name: "lstm1_h_concat"
+  type: "Concat"
+  bottom: "h_1"
+  bottom: "h_2"
+  bottom: "h_3"
+  bottom: "h_4"
+  bottom: "h_5"
+  bottom: "h_6"
+  bottom: "h_7"
+  bottom: "h_8"
+  top: "h"
+  concat_param {
+    axis: 0
+  }
+}
+layer {
+  name: "h_pseudoloss"
+  type: "Reduction"
+  bottom: "h"
+  top: "h_pseudoloss"
+  loss_weight: 1
+}
+I1017 23:54:12.680676 29508 layer_factory.hpp:77] Creating layer lstm1_
+I1017 23:54:12.680693 29508 net.cpp:84] Creating Layer lstm1_
+I1017 23:54:12.680699 29508 net.cpp:380] lstm1_ -> x
+I1017 23:54:12.680713 29508 net.cpp:380] lstm1_ -> cont
+I1017 23:54:12.680763 29508 net.cpp:122] Setting up lstm1_
+I1017 23:54:12.680770 29508 net.cpp:129] Top shape: 8 5 512 (20480)
+I1017 23:54:12.680776 29508 net.cpp:129] Top shape: 8 5 (40)
+I1017 23:54:12.680780 29508 net.cpp:137] Memory required for data: 82080
+I1017 23:54:12.680785 29508 layer_factory.hpp:77] Creating layer lstm1_
+I1017 23:54:12.680793 29508 net.cpp:84] Creating Layer lstm1_
+I1017 23:54:12.680800 29508 net.cpp:380] lstm1_ -> c_0
+I1017 23:54:12.680809 29508 net.cpp:380] lstm1_ -> h_0
+I1017 23:54:12.680862 29508 net.cpp:122] Setting up lstm1_
+I1017 23:54:12.680869 29508 net.cpp:129] Top shape: 1 5 512 (2560)
+I1017 23:54:12.680874 29508 net.cpp:129] Top shape: 1 5 512 (2560)
+I1017 23:54:12.680878 29508 net.cpp:137] Memory required for data: 102560
+I1017 23:54:12.680882 29508 layer_factory.hpp:77] Creating layer lstm1_cont_slice
+I1017 23:54:12.680893 29508 net.cpp:84] Creating Layer lstm1_cont_slice
+I1017 23:54:12.680898 29508 net.cpp:406] lstm1_cont_slice <- cont
+I1017 23:54:12.680907 29508 net.cpp:380] lstm1_cont_slice -> cont_1
+I1017 23:54:12.680914 29508 net.cpp:380] lstm1_cont_slice -> cont_2
+I1017 23:54:12.680922 29508 net.cpp:380] lstm1_cont_slice -> cont_3
+I1017 23:54:12.680927 29508 net.cpp:380] lstm1_cont_slice -> cont_4
+I1017 23:54:12.680933 29508 net.cpp:380] lstm1_cont_slice -> cont_5
+I1017 23:54:12.680940 29508 net.cpp:380] lstm1_cont_slice -> cont_6
+I1017 23:54:12.680946 29508 net.cpp:380] lstm1_cont_slice -> cont_7
+I1017 23:54:12.680954 29508 net.cpp:380] lstm1_cont_slice -> cont_8
+I1017 23:54:12.681054 29508 net.cpp:122] Setting up lstm1_cont_slice
+I1017 23:54:12.681073 29508 net.cpp:129] Top shape: 1 5 (5)
+I1017 23:54:12.681078 29508 net.cpp:129] Top shape: 1 5 (5)
+I1017 23:54:12.681083 29508 net.cpp:129] Top shape: 1 5 (5)
+I1017 23:54:12.681087 29508 net.cpp:129] Top shape: 1 5 (5)
+I1017 23:54:12.681092 29508 net.cpp:129] Top shape: 1 5 (5)
+I1017 23:54:12.681097 29508 net.cpp:129] Top shape: 1 5 (5)
+I1017 23:54:12.681102 29508 net.cpp:129] Top shape: 1 5 (5)
+I1017 23:54:12.681107 29508 net.cpp:129] Top shape: 1 5 (5)
+I1017 23:54:12.681110 29508 net.cpp:137] Memory required for data: 102720
+I1017 23:54:12.681114 29508 layer_factory.hpp:77] Creating layer cont_1_lstm1_cont_slice_0_split
+I1017 23:54:12.681121 29508 net.cpp:84] Creating Layer cont_1_lstm1_cont_slice_0_split
+I1017 23:54:12.681125 29508 net.cpp:406] cont_1_lstm1_cont_slice_0_split <- cont_1
+I1017 23:54:12.681131 29508 net.cpp:380] cont_1_lstm1_cont_slice_0_split -> cont_1_lstm1_cont_slice_0_split_0
+I1017 23:54:12.681138 29508 net.cpp:380] cont_1_lstm1_cont_slice_0_split -> cont_1_lstm1_cont_slice_0_split_1
+I1017 23:54:12.681170 29508 net.cpp:122] Setting up cont_1_lstm1_cont_slice_0_split
+I1017 23:54:12.681177 29508 net.cpp:129] Top shape: 1 5 (5)
+I1017 23:54:12.681182 29508 net.cpp:129] Top shape: 1 5 (5)
+I1017 23:54:12.681186 29508 net.cpp:137] Memory required for data: 102760
+I1017 23:54:12.681190 29508 layer_factory.hpp:77] Creating layer cont_2_lstm1_cont_slice_1_split
+I1017 23:54:12.681196 29508 net.cpp:84] Creating Layer cont_2_lstm1_cont_slice_1_split
+I1017 23:54:12.681200 29508 net.cpp:406] cont_2_lstm1_cont_slice_1_split <- cont_2
+I1017 23:54:12.681208 29508 net.cpp:380] cont_2_lstm1_cont_slice_1_split -> cont_2_lstm1_cont_slice_1_split_0
+I1017 23:54:12.681215 29508 net.cpp:380] cont_2_lstm1_cont_slice_1_split -> cont_2_lstm1_cont_slice_1_split_1
+I1017 23:54:12.681244 29508 net.cpp:122] Setting up cont_2_lstm1_cont_slice_1_split
+I1017 23:54:12.681252 29508 net.cpp:129] Top shape: 1 5 (5)
+I1017 23:54:12.681255 29508 net.cpp:129] Top shape: 1 5 (5)
+I1017 23:54:12.681259 29508 net.cpp:137] Memory required for data: 102800
+I1017 23:54:12.681263 29508 layer_factory.hpp:77] Creating layer cont_3_lstm1_cont_slice_2_split
+I1017 23:54:12.681268 29508 net.cpp:84] Creating Layer cont_3_lstm1_cont_slice_2_split
+I1017 23:54:12.681273 29508 net.cpp:406] cont_3_lstm1_cont_slice_2_split <- cont_3
+I1017 23:54:12.681279 29508 net.cpp:380] cont_3_lstm1_cont_slice_2_split -> cont_3_lstm1_cont_slice_2_split_0
+I1017 23:54:12.681288 29508 net.cpp:380] cont_3_lstm1_cont_slice_2_split -> cont_3_lstm1_cont_slice_2_split_1
+I1017 23:54:12.681318 29508 net.cpp:122] Setting up cont_3_lstm1_cont_slice_2_split
+I1017 23:54:12.681324 29508 net.cpp:129] Top shape: 1 5 (5)
+I1017 23:54:12.681329 29508 net.cpp:129] Top shape: 1 5 (5)
+I1017 23:54:12.681334 29508 net.cpp:137] Memory required for data: 102840
+I1017 23:54:12.681337 29508 layer_factory.hpp:77] Creating layer cont_4_lstm1_cont_slice_3_split
+I1017 23:54:12.681342 29508 net.cpp:84] Creating Layer cont_4_lstm1_cont_slice_3_split
+I1017 23:54:12.681346 29508 net.cpp:406] cont_4_lstm1_cont_slice_3_split <- cont_4
+I1017 23:54:12.681352 29508 net.cpp:380] cont_4_lstm1_cont_slice_3_split -> cont_4_lstm1_cont_slice_3_split_0
+I1017 23:54:12.681358 29508 net.cpp:380] cont_4_lstm1_cont_slice_3_split -> cont_4_lstm1_cont_slice_3_split_1
+I1017 23:54:12.681391 29508 net.cpp:122] Setting up cont_4_lstm1_cont_slice_3_split
+I1017 23:54:12.681396 29508 net.cpp:129] Top shape: 1 5 (5)
+I1017 23:54:12.681401 29508 net.cpp:129] Top shape: 1 5 (5)
+I1017 23:54:12.681406 29508 net.cpp:137] Memory required for data: 102880
+I1017 23:54:12.681409 29508 layer_factory.hpp:77] Creating layer cont_5_lstm1_cont_slice_4_split
+I1017 23:54:12.681414 29508 net.cpp:84] Creating Layer cont_5_lstm1_cont_slice_4_split
+I1017 23:54:12.681418 29508 net.cpp:406] cont_5_lstm1_cont_slice_4_split <- cont_5
+I1017 23:54:12.681427 29508 net.cpp:380] cont_5_lstm1_cont_slice_4_split -> cont_5_lstm1_cont_slice_4_split_0
+I1017 23:54:12.681432 29508 net.cpp:380] cont_5_lstm1_cont_slice_4_split -> cont_5_lstm1_cont_slice_4_split_1
+I1017 23:54:12.681473 29508 net.cpp:122] Setting up cont_5_lstm1_cont_slice_4_split
+I1017 23:54:12.681478 29508 net.cpp:129] Top shape: 1 5 (5)
+I1017 23:54:12.681483 29508 net.cpp:129] Top shape: 1 5 (5)
+I1017 23:54:12.681486 29508 net.cpp:137] Memory required for data: 102920
+I1017 23:54:12.681490 29508 layer_factory.hpp:77] Creating layer cont_6_lstm1_cont_slice_5_split
+I1017 23:54:12.681499 29508 net.cpp:84] Creating Layer cont_6_lstm1_cont_slice_5_split
+I1017 23:54:12.681502 29508 net.cpp:406] cont_6_lstm1_cont_slice_5_split <- cont_6
+I1017 23:54:12.681507 29508 net.cpp:380] cont_6_lstm1_cont_slice_5_split -> cont_6_lstm1_cont_slice_5_split_0
+I1017 23:54:12.681514 29508 net.cpp:380] cont_6_lstm1_cont_slice_5_split -> cont_6_lstm1_cont_slice_5_split_1
+I1017 23:54:12.681542 29508 net.cpp:122] Setting up cont_6_lstm1_cont_slice_5_split
+I1017 23:54:12.681548 29508 net.cpp:129] Top shape: 1 5 (5)
+I1017 23:54:12.681553 29508 net.cpp:129] Top shape: 1 5 (5)
+I1017 23:54:12.681556 29508 net.cpp:137] Memory required for data: 102960
+I1017 23:54:12.681560 29508 layer_factory.hpp:77] Creating layer cont_7_lstm1_cont_slice_6_split
+I1017 23:54:12.681565 29508 net.cpp:84] Creating Layer cont_7_lstm1_cont_slice_6_split
+I1017 23:54:12.681569 29508 net.cpp:406] cont_7_lstm1_cont_slice_6_split <- cont_7
+I1017 23:54:12.681574 29508 net.cpp:380] cont_7_lstm1_cont_slice_6_split -> cont_7_lstm1_cont_slice_6_split_0
+I1017 23:54:12.681581 29508 net.cpp:380] cont_7_lstm1_cont_slice_6_split -> cont_7_lstm1_cont_slice_6_split_1
+I1017 23:54:12.681622 29508 net.cpp:122] Setting up cont_7_lstm1_cont_slice_6_split
+I1017 23:54:12.681627 29508 net.cpp:129] Top shape: 1 5 (5)
+I1017 23:54:12.681632 29508 net.cpp:129] Top shape: 1 5 (5)
+I1017 23:54:12.681637 29508 net.cpp:137] Memory required for data: 103000
+I1017 23:54:12.681640 29508 layer_factory.hpp:77] Creating layer cont_8_lstm1_cont_slice_7_split
+I1017 23:54:12.681645 29508 net.cpp:84] Creating Layer cont_8_lstm1_cont_slice_7_split
+I1017 23:54:12.681649 29508 net.cpp:406] cont_8_lstm1_cont_slice_7_split <- cont_8
+I1017 23:54:12.681656 29508 net.cpp:380] cont_8_lstm1_cont_slice_7_split -> cont_8_lstm1_cont_slice_7_split_0
+I1017 23:54:12.681663 29508 net.cpp:380] cont_8_lstm1_cont_slice_7_split -> cont_8_lstm1_cont_slice_7_split_1
+I1017 23:54:12.681691 29508 net.cpp:122] Setting up cont_8_lstm1_cont_slice_7_split
+I1017 23:54:12.681697 29508 net.cpp:129] Top shape: 1 5 (5)
+I1017 23:54:12.681702 29508 net.cpp:129] Top shape: 1 5 (5)
+I1017 23:54:12.681706 29508 net.cpp:137] Memory required for data: 103040
+I1017 23:54:12.681710 29508 layer_factory.hpp:77] Creating layer lstm1_x_transform
+I1017 23:54:12.681725 29508 net.cpp:84] Creating Layer lstm1_x_transform
+I1017 23:54:12.681728 29508 net.cpp:406] lstm1_x_transform <- x
+I1017 23:54:12.681735 29508 net.cpp:380] lstm1_x_transform -> W_xc_x
+I1017 23:54:12.693464 29508 net.cpp:122] Setting up lstm1_x_transform
+I1017 23:54:12.693492 29508 net.cpp:129] Top shape: 8 5 2048 (81920)
+I1017 23:54:12.693497 29508 net.cpp:137] Memory required for data: 430720
+I1017 23:54:12.693508 29508 layer_factory.hpp:77] Creating layer lstm1_W_xc_x_slice
+I1017 23:54:12.693518 29508 net.cpp:84] Creating Layer lstm1_W_xc_x_slice
+I1017 23:54:12.693522 29508 net.cpp:406] lstm1_W_xc_x_slice <- W_xc_x
+I1017 23:54:12.693529 29508 net.cpp:380] lstm1_W_xc_x_slice -> W_xc_x_1
+I1017 23:54:12.693538 29508 net.cpp:380] lstm1_W_xc_x_slice -> W_xc_x_2
+I1017 23:54:12.693545 29508 net.cpp:380] lstm1_W_xc_x_slice -> W_xc_x_3
+I1017 23:54:12.693552 29508 net.cpp:380] lstm1_W_xc_x_slice -> W_xc_x_4
+I1017 23:54:12.693563 29508 net.cpp:380] lstm1_W_xc_x_slice -> W_xc_x_5
+I1017 23:54:12.693579 29508 net.cpp:380] lstm1_W_xc_x_slice -> W_xc_x_6
+I1017 23:54:12.693585 29508 net.cpp:380] lstm1_W_xc_x_slice -> W_xc_x_7
+I1017 23:54:12.693591 29508 net.cpp:380] lstm1_W_xc_x_slice -> W_xc_x_8
+I1017 23:54:12.693687 29508 net.cpp:122] Setting up lstm1_W_xc_x_slice
+I1017 23:54:12.693696 29508 net.cpp:129] Top shape: 1 5 2048 (10240)
+I1017 23:54:12.693701 29508 net.cpp:129] Top shape: 1 5 2048 (10240)
+I1017 23:54:12.693706 29508 net.cpp:129] Top shape: 1 5 2048 (10240)
+I1017 23:54:12.693711 29508 net.cpp:129] Top shape: 1 5 2048 (10240)
+I1017 23:54:12.693716 29508 net.cpp:129] Top shape: 1 5 2048 (10240)
+I1017 23:54:12.693720 29508 net.cpp:129] Top shape: 1 5 2048 (10240)
+I1017 23:54:12.693725 29508 net.cpp:129] Top shape: 1 5 2048 (10240)
+I1017 23:54:12.693729 29508 net.cpp:129] Top shape: 1 5 2048 (10240)
+I1017 23:54:12.693733 29508 net.cpp:137] Memory required for data: 758400
+I1017 23:54:12.693737 29508 layer_factory.hpp:77] Creating layer lstm1_h_conted_0
+I1017 23:54:12.693750 29508 net.cpp:84] Creating Layer lstm1_h_conted_0
+I1017 23:54:12.693754 29508 net.cpp:406] lstm1_h_conted_0 <- h_0
+I1017 23:54:12.693760 29508 net.cpp:406] lstm1_h_conted_0 <- cont_1_lstm1_cont_slice_0_split_0
+I1017 23:54:12.693768 29508 net.cpp:380] lstm1_h_conted_0 -> h_conted_0
+I1017 23:54:12.693832 29508 net.cpp:122] Setting up lstm1_h_conted_0
+I1017 23:54:12.693840 29508 net.cpp:129] Top shape: 1 5 512 (2560)
+I1017 23:54:12.693845 29508 net.cpp:137] Memory required for data: 768640
+I1017 23:54:12.693848 29508 layer_factory.hpp:77] Creating layer lstm1_transform_1
+I1017 23:54:12.693856 29508 net.cpp:84] Creating Layer lstm1_transform_1
+I1017 23:54:12.693861 29508 net.cpp:406] lstm1_transform_1 <- h_conted_0
+I1017 23:54:12.693871 29508 net.cpp:380] lstm1_transform_1 -> W_hc_h_0
+I1017 23:54:12.704855 29508 net.cpp:122] Setting up lstm1_transform_1
+I1017 23:54:12.704870 29508 net.cpp:129] Top shape: 1 5 2048 (10240)
+I1017 23:54:12.704886 29508 net.cpp:137] Memory required for data: 809600
+I1017 23:54:12.704895 29508 layer_factory.hpp:77] Creating layer lstm1_gate_input_1
+I1017 23:54:12.704903 29508 net.cpp:84] Creating Layer lstm1_gate_input_1
+I1017 23:54:12.704908 29508 net.cpp:406] lstm1_gate_input_1 <- W_hc_h_0
+I1017 23:54:12.704913 29508 net.cpp:406] lstm1_gate_input_1 <- W_xc_x_1
+I1017 23:54:12.704921 29508 net.cpp:380] lstm1_gate_input_1 -> gate_input_1
+I1017 23:54:12.704954 29508 net.cpp:122] Setting up lstm1_gate_input_1
+I1017 23:54:12.704963 29508 net.cpp:129] Top shape: 1 5 2048 (10240)
+I1017 23:54:12.704967 29508 net.cpp:137] Memory required for data: 850560
+I1017 23:54:12.704977 29508 layer_factory.hpp:77] Creating layer lstm1_unit_1
+I1017 23:54:12.704987 29508 net.cpp:84] Creating Layer lstm1_unit_1
+I1017 23:54:12.704991 29508 net.cpp:406] lstm1_unit_1 <- c_0
+I1017 23:54:12.704996 29508 net.cpp:406] lstm1_unit_1 <- gate_input_1
+I1017 23:54:12.705001 29508 net.cpp:406] lstm1_unit_1 <- cont_1_lstm1_cont_slice_0_split_1
+I1017 23:54:12.705009 29508 net.cpp:380] lstm1_unit_1 -> c_1
+I1017 23:54:12.705016 29508 net.cpp:380] lstm1_unit_1 -> h_1
+I1017 23:54:12.705062 29508 net.cpp:122] Setting up lstm1_unit_1
+I1017 23:54:12.705070 29508 net.cpp:129] Top shape: 1 5 512 (2560)
+I1017 23:54:12.705075 29508 net.cpp:129] Top shape: 1 5 512 (2560)
+I1017 23:54:12.705078 29508 net.cpp:137] Memory required for data: 871040
+I1017 23:54:12.705082 29508 layer_factory.hpp:77] Creating layer h_1_lstm1_unit_1_1_split
+I1017 23:54:12.705087 29508 net.cpp:84] Creating Layer h_1_lstm1_unit_1_1_split
+I1017 23:54:12.705092 29508 net.cpp:406] h_1_lstm1_unit_1_1_split <- h_1
+I1017 23:54:12.705097 29508 net.cpp:380] h_1_lstm1_unit_1_1_split -> h_1_lstm1_unit_1_1_split_0
+I1017 23:54:12.705104 29508 net.cpp:380] h_1_lstm1_unit_1_1_split -> h_1_lstm1_unit_1_1_split_1
+I1017 23:54:12.705134 29508 net.cpp:122] Setting up h_1_lstm1_unit_1_1_split
+I1017 23:54:12.705152 29508 net.cpp:129] Top shape: 1 5 512 (2560)
+I1017 23:54:12.705157 29508 net.cpp:129] Top shape: 1 5 512 (2560)
+I1017 23:54:12.705160 29508 net.cpp:137] Memory required for data: 891520
+I1017 23:54:12.705164 29508 layer_factory.hpp:77] Creating layer lstm1_h_conted_1
+I1017 23:54:12.705170 29508 net.cpp:84] Creating Layer lstm1_h_conted_1
+I1017 23:54:12.705174 29508 net.cpp:406] lstm1_h_conted_1 <- h_1_lstm1_unit_1_1_split_0
+I1017 23:54:12.705179 29508 net.cpp:406] lstm1_h_conted_1 <- cont_2_lstm1_cont_slice_1_split_0
+I1017 23:54:12.705188 29508 net.cpp:380] lstm1_h_conted_1 -> h_conted_1
+I1017 23:54:12.705237 29508 net.cpp:122] Setting up lstm1_h_conted_1
+I1017 23:54:12.705245 29508 net.cpp:129] Top shape: 1 5 512 (2560)
+I1017 23:54:12.705247 29508 net.cpp:137] Memory required for data: 901760
+I1017 23:54:12.705251 29508 layer_factory.hpp:77] Creating layer lstm1_transform_2
+I1017 23:54:12.705258 29508 net.cpp:84] Creating Layer lstm1_transform_2
+I1017 23:54:12.705262 29508 net.cpp:406] lstm1_transform_2 <- h_conted_1
+I1017 23:54:12.705271 29508 net.cpp:380] lstm1_transform_2 -> W_hc_h_1
+I1017 23:54:12.716644 29508 net.cpp:122] Setting up lstm1_transform_2
+I1017 23:54:12.716671 29508 net.cpp:129] Top shape: 1 5 2048 (10240)
+I1017 23:54:12.716675 29508 net.cpp:137] Memory required for data: 942720
+I1017 23:54:12.716681 29508 net.cpp:465] Sharing parameters 'W_hc' owned by layer 'lstm1_transform_1', param index 0
+I1017 23:54:12.716688 29508 layer_factory.hpp:77] Creating layer lstm1_gate_input_2
+I1017 23:54:12.716696 29508 net.cpp:84] Creating Layer lstm1_gate_input_2
+I1017 23:54:12.716701 29508 net.cpp:406] lstm1_gate_input_2 <- W_hc_h_1
+I1017 23:54:12.716706 29508 net.cpp:406] lstm1_gate_input_2 <- W_xc_x_2
+I1017 23:54:12.716714 29508 net.cpp:380] lstm1_gate_input_2 -> gate_input_2
+I1017 23:54:12.716739 29508 net.cpp:122] Setting up lstm1_gate_input_2
+I1017 23:54:12.716748 29508 net.cpp:129] Top shape: 1 5 2048 (10240)
+I1017 23:54:12.716753 29508 net.cpp:137] Memory required for data: 983680
+I1017 23:54:12.716756 29508 layer_factory.hpp:77] Creating layer lstm1_unit_2
+I1017 23:54:12.716763 29508 net.cpp:84] Creating Layer lstm1_unit_2
+I1017 23:54:12.716768 29508 net.cpp:406] lstm1_unit_2 <- c_1
+I1017 23:54:12.716773 29508 net.cpp:406] lstm1_unit_2 <- gate_input_2
+I1017 23:54:12.716778 29508 net.cpp:406] lstm1_unit_2 <- cont_2_lstm1_cont_slice_1_split_1
+I1017 23:54:12.716784 29508 net.cpp:380] lstm1_unit_2 -> c_2
+I1017 23:54:12.716790 29508 net.cpp:380] lstm1_unit_2 -> h_2
+I1017 23:54:12.716830 29508 net.cpp:122] Setting up lstm1_unit_2
+I1017 23:54:12.716837 29508 net.cpp:129] Top shape: 1 5 512 (2560)
+I1017 23:54:12.716842 29508 net.cpp:129] Top shape: 1 5 512 (2560)
+I1017 23:54:12.716846 29508 net.cpp:137] Memory required for data: 1004160
+I1017 23:54:12.716850 29508 layer_factory.hpp:77] Creating layer h_2_lstm1_unit_2_1_split
+I1017 23:54:12.716856 29508 net.cpp:84] Creating Layer h_2_lstm1_unit_2_1_split
+I1017 23:54:12.716859 29508 net.cpp:406] h_2_lstm1_unit_2_1_split <- h_2
+I1017 23:54:12.716866 29508 net.cpp:380] h_2_lstm1_unit_2_1_split -> h_2_lstm1_unit_2_1_split_0
+I1017 23:54:12.716872 29508 net.cpp:380] h_2_lstm1_unit_2_1_split -> h_2_lstm1_unit_2_1_split_1
+I1017 23:54:12.716902 29508 net.cpp:122] Setting up h_2_lstm1_unit_2_1_split
+I1017 23:54:12.716909 29508 net.cpp:129] Top shape: 1 5 512 (2560)
+I1017 23:54:12.716914 29508 net.cpp:129] Top shape: 1 5 512 (2560)
+I1017 23:54:12.716917 29508 net.cpp:137] Memory required for data: 1024640
+I1017 23:54:12.716922 29508 layer_factory.hpp:77] Creating layer lstm1_h_conted_2
+I1017 23:54:12.716928 29508 net.cpp:84] Creating Layer lstm1_h_conted_2
+I1017 23:54:12.716933 29508 net.cpp:406] lstm1_h_conted_2 <- h_2_lstm1_unit_2_1_split_0
+I1017 23:54:12.716938 29508 net.cpp:406] lstm1_h_conted_2 <- cont_3_lstm1_cont_slice_2_split_0
+I1017 23:54:12.716943 29508 net.cpp:380] lstm1_h_conted_2 -> h_conted_2
+I1017 23:54:12.716994 29508 net.cpp:122] Setting up lstm1_h_conted_2
+I1017 23:54:12.717001 29508 net.cpp:129] Top shape: 1 5 512 (2560)
+I1017 23:54:12.717005 29508 net.cpp:137] Memory required for data: 1034880
+I1017 23:54:12.717010 29508 layer_factory.hpp:77] Creating layer lstm1_transform_3
+I1017 23:54:12.717016 29508 net.cpp:84] Creating Layer lstm1_transform_3
+I1017 23:54:12.717020 29508 net.cpp:406] lstm1_transform_3 <- h_conted_2
+I1017 23:54:12.717028 29508 net.cpp:380] lstm1_transform_3 -> W_hc_h_2
+I1017 23:54:12.727727 29508 net.cpp:122] Setting up lstm1_transform_3
+I1017 23:54:12.727753 29508 net.cpp:129] Top shape: 1 5 2048 (10240)
+I1017 23:54:12.727757 29508 net.cpp:137] Memory required for data: 1075840
+I1017 23:54:12.727764 29508 net.cpp:465] Sharing parameters 'W_hc' owned by layer 'lstm1_transform_1', param index 0
+I1017 23:54:12.727771 29508 layer_factory.hpp:77] Creating layer lstm1_gate_input_3
+I1017 23:54:12.727777 29508 net.cpp:84] Creating Layer lstm1_gate_input_3
+I1017 23:54:12.727782 29508 net.cpp:406] lstm1_gate_input_3 <- W_hc_h_2
+I1017 23:54:12.727787 29508 net.cpp:406] lstm1_gate_input_3 <- W_xc_x_3
+I1017 23:54:12.727793 29508 net.cpp:380] lstm1_gate_input_3 -> gate_input_3
+I1017 23:54:12.727820 29508 net.cpp:122] Setting up lstm1_gate_input_3
+I1017 23:54:12.727841 29508 net.cpp:129] Top shape: 1 5 2048 (10240)
+I1017 23:54:12.727844 29508 net.cpp:137] Memory required for data: 1116800
+I1017 23:54:12.727849 29508 layer_factory.hpp:77] Creating layer lstm1_unit_3
+I1017 23:54:12.727856 29508 net.cpp:84] Creating Layer lstm1_unit_3
+I1017 23:54:12.727861 29508 net.cpp:406] lstm1_unit_3 <- c_2
+I1017 23:54:12.727866 29508 net.cpp:406] lstm1_unit_3 <- gate_input_3
+I1017 23:54:12.727871 29508 net.cpp:406] lstm1_unit_3 <- cont_3_lstm1_cont_slice_2_split_1
+I1017 23:54:12.727876 29508 net.cpp:380] lstm1_unit_3 -> c_3
+I1017 23:54:12.727883 29508 net.cpp:380] lstm1_unit_3 -> h_3
+I1017 23:54:12.727924 29508 net.cpp:122] Setting up lstm1_unit_3
+I1017 23:54:12.727931 29508 net.cpp:129] Top shape: 1 5 512 (2560)
+I1017 23:54:12.727936 29508 net.cpp:129] Top shape: 1 5 512 (2560)
+I1017 23:54:12.727941 29508 net.cpp:137] Memory required for data: 1137280
+I1017 23:54:12.727944 29508 layer_factory.hpp:77] Creating layer h_3_lstm1_unit_3_1_split
+I1017 23:54:12.727952 29508 net.cpp:84] Creating Layer h_3_lstm1_unit_3_1_split
+I1017 23:54:12.727955 29508 net.cpp:406] h_3_lstm1_unit_3_1_split <- h_3
+I1017 23:54:12.727962 29508 net.cpp:380] h_3_lstm1_unit_3_1_split -> h_3_lstm1_unit_3_1_split_0
+I1017 23:54:12.727967 29508 net.cpp:380] h_3_lstm1_unit_3_1_split -> h_3_lstm1_unit_3_1_split_1
+I1017 23:54:12.727998 29508 net.cpp:122] Setting up h_3_lstm1_unit_3_1_split
+I1017 23:54:12.728006 29508 net.cpp:129] Top shape: 1 5 512 (2560)
+I1017 23:54:12.728011 29508 net.cpp:129] Top shape: 1 5 512 (2560)
+I1017 23:54:12.728015 29508 net.cpp:137] Memory required for data: 1157760
+I1017 23:54:12.728019 29508 layer_factory.hpp:77] Creating layer lstm1_h_conted_3
+I1017 23:54:12.728032 29508 net.cpp:84] Creating Layer lstm1_h_conted_3
+I1017 23:54:12.728037 29508 net.cpp:406] lstm1_h_conted_3 <- h_3_lstm1_unit_3_1_split_0
+I1017 23:54:12.728044 29508 net.cpp:406] lstm1_h_conted_3 <- cont_4_lstm1_cont_slice_3_split_0
+I1017 23:54:12.728049 29508 net.cpp:380] lstm1_h_conted_3 -> h_conted_3
+I1017 23:54:12.728101 29508 net.cpp:122] Setting up lstm1_h_conted_3
+I1017 23:54:12.728108 29508 net.cpp:129] Top shape: 1 5 512 (2560)
+I1017 23:54:12.728112 29508 net.cpp:137] Memory required for data: 1168000
+I1017 23:54:12.728116 29508 layer_factory.hpp:77] Creating layer lstm1_transform_4
+I1017 23:54:12.728123 29508 net.cpp:84] Creating Layer lstm1_transform_4
+I1017 23:54:12.728127 29508 net.cpp:406] lstm1_transform_4 <- h_conted_3
+I1017 23:54:12.728133 29508 net.cpp:380] lstm1_transform_4 -> W_hc_h_3
+I1017 23:54:12.738871 29508 net.cpp:122] Setting up lstm1_transform_4
+I1017 23:54:12.738886 29508 net.cpp:129] Top shape: 1 5 2048 (10240)
+I1017 23:54:12.738901 29508 net.cpp:137] Memory required for data: 1208960
+I1017 23:54:12.738907 29508 net.cpp:465] Sharing parameters 'W_hc' owned by layer 'lstm1_transform_1', param index 0
+I1017 23:54:12.738911 29508 layer_factory.hpp:77] Creating layer lstm1_gate_input_4
+I1017 23:54:12.738919 29508 net.cpp:84] Creating Layer lstm1_gate_input_4
+I1017 23:54:12.738924 29508 net.cpp:406] lstm1_gate_input_4 <- W_hc_h_3
+I1017 23:54:12.738929 29508 net.cpp:406] lstm1_gate_input_4 <- W_xc_x_4
+I1017 23:54:12.738935 29508 net.cpp:380] lstm1_gate_input_4 -> gate_input_4
+I1017 23:54:12.738963 29508 net.cpp:122] Setting up lstm1_gate_input_4
+I1017 23:54:12.738971 29508 net.cpp:129] Top shape: 1 5 2048 (10240)
+I1017 23:54:12.738976 29508 net.cpp:137] Memory required for data: 1249920
+I1017 23:54:12.738979 29508 layer_factory.hpp:77] Creating layer lstm1_unit_4
+I1017 23:54:12.738986 29508 net.cpp:84] Creating Layer lstm1_unit_4
+I1017 23:54:12.738991 29508 net.cpp:406] lstm1_unit_4 <- c_3
+I1017 23:54:12.738996 29508 net.cpp:406] lstm1_unit_4 <- gate_input_4
+I1017 23:54:12.739001 29508 net.cpp:406] lstm1_unit_4 <- cont_4_lstm1_cont_slice_3_split_1
+I1017 23:54:12.739006 29508 net.cpp:380] lstm1_unit_4 -> c_4
+I1017 23:54:12.739013 29508 net.cpp:380] lstm1_unit_4 -> h_4
+I1017 23:54:12.739073 29508 net.cpp:122] Setting up lstm1_unit_4
+I1017 23:54:12.739080 29508 net.cpp:129] Top shape: 1 5 512 (2560)
+I1017 23:54:12.739085 29508 net.cpp:129] Top shape: 1 5 512 (2560)
+I1017 23:54:12.739089 29508 net.cpp:137] Memory required for data: 1270400
+I1017 23:54:12.739094 29508 layer_factory.hpp:77] Creating layer h_4_lstm1_unit_4_1_split
+I1017 23:54:12.739104 29508 net.cpp:84] Creating Layer h_4_lstm1_unit_4_1_split
+I1017 23:54:12.739107 29508 net.cpp:406] h_4_lstm1_unit_4_1_split <- h_4
+I1017 23:54:12.739114 29508 net.cpp:380] h_4_lstm1_unit_4_1_split -> h_4_lstm1_unit_4_1_split_0
+I1017 23:54:12.739120 29508 net.cpp:380] h_4_lstm1_unit_4_1_split -> h_4_lstm1_unit_4_1_split_1
+I1017 23:54:12.739158 29508 net.cpp:122] Setting up h_4_lstm1_unit_4_1_split
+I1017 23:54:12.739164 29508 net.cpp:129] Top shape: 1 5 512 (2560)
+I1017 23:54:12.739169 29508 net.cpp:129] Top shape: 1 5 512 (2560)
+I1017 23:54:12.739173 29508 net.cpp:137] Memory required for data: 1290880
+I1017 23:54:12.739177 29508 layer_factory.hpp:77] Creating layer lstm1_h_conted_4
+I1017 23:54:12.739188 29508 net.cpp:84] Creating Layer lstm1_h_conted_4
+I1017 23:54:12.739193 29508 net.cpp:406] lstm1_h_conted_4 <- h_4_lstm1_unit_4_1_split_0
+I1017 23:54:12.739198 29508 net.cpp:406] lstm1_h_conted_4 <- cont_5_lstm1_cont_slice_4_split_0
+I1017 23:54:12.739204 29508 net.cpp:380] lstm1_h_conted_4 -> h_conted_4
+I1017 23:54:12.739258 29508 net.cpp:122] Setting up lstm1_h_conted_4
+I1017 23:54:12.739264 29508 net.cpp:129] Top shape: 1 5 512 (2560)
+I1017 23:54:12.739269 29508 net.cpp:137] Memory required for data: 1301120
+I1017 23:54:12.739272 29508 layer_factory.hpp:77] Creating layer lstm1_transform_5
+I1017 23:54:12.739280 29508 net.cpp:84] Creating Layer lstm1_transform_5
+I1017 23:54:12.739284 29508 net.cpp:406] lstm1_transform_5 <- h_conted_4
+I1017 23:54:12.739291 29508 net.cpp:380] lstm1_transform_5 -> W_hc_h_4
+I1017 23:54:12.750706 29508 net.cpp:122] Setting up lstm1_transform_5
+I1017 23:54:12.750732 29508 net.cpp:129] Top shape: 1 5 2048 (10240)
+I1017 23:54:12.750737 29508 net.cpp:137] Memory required for data: 1342080
+I1017 23:54:12.750742 29508 net.cpp:465] Sharing parameters 'W_hc' owned by layer 'lstm1_transform_1', param index 0
+I1017 23:54:12.750747 29508 layer_factory.hpp:77] Creating layer lstm1_gate_input_5
+I1017 23:54:12.750756 29508 net.cpp:84] Creating Layer lstm1_gate_input_5
+I1017 23:54:12.750761 29508 net.cpp:406] lstm1_gate_input_5 <- W_hc_h_4
+I1017 23:54:12.750766 29508 net.cpp:406] lstm1_gate_input_5 <- W_xc_x_5
+I1017 23:54:12.750772 29508 net.cpp:380] lstm1_gate_input_5 -> gate_input_5
+I1017 23:54:12.750798 29508 net.cpp:122] Setting up lstm1_gate_input_5
+I1017 23:54:12.750815 29508 net.cpp:129] Top shape: 1 5 2048 (10240)
+I1017 23:54:12.750819 29508 net.cpp:137] Memory required for data: 1383040
+I1017 23:54:12.750823 29508 layer_factory.hpp:77] Creating layer lstm1_unit_5
+I1017 23:54:12.750829 29508 net.cpp:84] Creating Layer lstm1_unit_5
+I1017 23:54:12.750834 29508 net.cpp:406] lstm1_unit_5 <- c_4
+I1017 23:54:12.750839 29508 net.cpp:406] lstm1_unit_5 <- gate_input_5
+I1017 23:54:12.750844 29508 net.cpp:406] lstm1_unit_5 <- cont_5_lstm1_cont_slice_4_split_1
+I1017 23:54:12.750852 29508 net.cpp:380] lstm1_unit_5 -> c_5
+I1017 23:54:12.750859 29508 net.cpp:380] lstm1_unit_5 -> h_5
+I1017 23:54:12.750902 29508 net.cpp:122] Setting up lstm1_unit_5
+I1017 23:54:12.750910 29508 net.cpp:129] Top shape: 1 5 512 (2560)
+I1017 23:54:12.750916 29508 net.cpp:129] Top shape: 1 5 512 (2560)
+I1017 23:54:12.750918 29508 net.cpp:137] Memory required for data: 1403520
+I1017 23:54:12.750922 29508 layer_factory.hpp:77] Creating layer h_5_lstm1_unit_5_1_split
+I1017 23:54:12.750928 29508 net.cpp:84] Creating Layer h_5_lstm1_unit_5_1_split
+I1017 23:54:12.750932 29508 net.cpp:406] h_5_lstm1_unit_5_1_split <- h_5
+I1017 23:54:12.750938 29508 net.cpp:380] h_5_lstm1_unit_5_1_split -> h_5_lstm1_unit_5_1_split_0
+I1017 23:54:12.750946 29508 net.cpp:380] h_5_lstm1_unit_5_1_split -> h_5_lstm1_unit_5_1_split_1
+I1017 23:54:12.750977 29508 net.cpp:122] Setting up h_5_lstm1_unit_5_1_split
+I1017 23:54:12.750984 29508 net.cpp:129] Top shape: 1 5 512 (2560)
+I1017 23:54:12.750988 29508 net.cpp:129] Top shape: 1 5 512 (2560)
+I1017 23:54:12.750993 29508 net.cpp:137] Memory required for data: 1424000
+I1017 23:54:12.750996 29508 layer_factory.hpp:77] Creating layer lstm1_h_conted_5
+I1017 23:54:12.751003 29508 net.cpp:84] Creating Layer lstm1_h_conted_5
+I1017 23:54:12.751008 29508 net.cpp:406] lstm1_h_conted_5 <- h_5_lstm1_unit_5_1_split_0
+I1017 23:54:12.751013 29508 net.cpp:406] lstm1_h_conted_5 <- cont_6_lstm1_cont_slice_5_split_0
+I1017 23:54:12.751020 29508 net.cpp:380] lstm1_h_conted_5 -> h_conted_5
+I1017 23:54:12.751073 29508 net.cpp:122] Setting up lstm1_h_conted_5
+I1017 23:54:12.751082 29508 net.cpp:129] Top shape: 1 5 512 (2560)
+I1017 23:54:12.751086 29508 net.cpp:137] Memory required for data: 1434240
+I1017 23:54:12.751091 29508 layer_factory.hpp:77] Creating layer lstm1_transform_6
+I1017 23:54:12.751097 29508 net.cpp:84] Creating Layer lstm1_transform_6
+I1017 23:54:12.751101 29508 net.cpp:406] lstm1_transform_6 <- h_conted_5
+I1017 23:54:12.751109 29508 net.cpp:380] lstm1_transform_6 -> W_hc_h_5
+I1017 23:54:12.762183 29508 net.cpp:122] Setting up lstm1_transform_6
+I1017 23:54:12.762209 29508 net.cpp:129] Top shape: 1 5 2048 (10240)
+I1017 23:54:12.762214 29508 net.cpp:137] Memory required for data: 1475200
+I1017 23:54:12.762219 29508 net.cpp:465] Sharing parameters 'W_hc' owned by layer 'lstm1_transform_1', param index 0
+I1017 23:54:12.762224 29508 layer_factory.hpp:77] Creating layer lstm1_gate_input_6
+I1017 23:54:12.762238 29508 net.cpp:84] Creating Layer lstm1_gate_input_6
+I1017 23:54:12.762243 29508 net.cpp:406] lstm1_gate_input_6 <- W_hc_h_5
+I1017 23:54:12.762248 29508 net.cpp:406] lstm1_gate_input_6 <- W_xc_x_6
+I1017 23:54:12.762256 29508 net.cpp:380] lstm1_gate_input_6 -> gate_input_6
+I1017 23:54:12.762281 29508 net.cpp:122] Setting up lstm1_gate_input_6
+I1017 23:54:12.762289 29508 net.cpp:129] Top shape: 1 5 2048 (10240)
+I1017 23:54:12.762291 29508 net.cpp:137] Memory required for data: 1516160
+I1017 23:54:12.762295 29508 layer_factory.hpp:77] Creating layer lstm1_unit_6
+I1017 23:54:12.762302 29508 net.cpp:84] Creating Layer lstm1_unit_6
+I1017 23:54:12.762306 29508 net.cpp:406] lstm1_unit_6 <- c_5
+I1017 23:54:12.762312 29508 net.cpp:406] lstm1_unit_6 <- gate_input_6
+I1017 23:54:12.762316 29508 net.cpp:406] lstm1_unit_6 <- cont_6_lstm1_cont_slice_5_split_1
+I1017 23:54:12.762322 29508 net.cpp:380] lstm1_unit_6 -> c_6
+I1017 23:54:12.762329 29508 net.cpp:380] lstm1_unit_6 -> h_6
+I1017 23:54:12.762370 29508 net.cpp:122] Setting up lstm1_unit_6
+I1017 23:54:12.762377 29508 net.cpp:129] Top shape: 1 5 512 (2560)
+I1017 23:54:12.762382 29508 net.cpp:129] Top shape: 1 5 512 (2560)
+I1017 23:54:12.762385 29508 net.cpp:137] Memory required for data: 1536640
+I1017 23:54:12.762389 29508 layer_factory.hpp:77] Creating layer h_6_lstm1_unit_6_1_split
+I1017 23:54:12.762395 29508 net.cpp:84] Creating Layer h_6_lstm1_unit_6_1_split
+I1017 23:54:12.762399 29508 net.cpp:406] h_6_lstm1_unit_6_1_split <- h_6
+I1017 23:54:12.762405 29508 net.cpp:380] h_6_lstm1_unit_6_1_split -> h_6_lstm1_unit_6_1_split_0
+I1017 23:54:12.762411 29508 net.cpp:380] h_6_lstm1_unit_6_1_split -> h_6_lstm1_unit_6_1_split_1
+I1017 23:54:12.762444 29508 net.cpp:122] Setting up h_6_lstm1_unit_6_1_split
+I1017 23:54:12.762449 29508 net.cpp:129] Top shape: 1 5 512 (2560)
+I1017 23:54:12.762454 29508 net.cpp:129] Top shape: 1 5 512 (2560)
+I1017 23:54:12.762459 29508 net.cpp:137] Memory required for data: 1557120
+I1017 23:54:12.762462 29508 layer_factory.hpp:77] Creating layer lstm1_h_conted_6
+I1017 23:54:12.762468 29508 net.cpp:84] Creating Layer lstm1_h_conted_6
+I1017 23:54:12.762472 29508 net.cpp:406] lstm1_h_conted_6 <- h_6_lstm1_unit_6_1_split_0
+I1017 23:54:12.762478 29508 net.cpp:406] lstm1_h_conted_6 <- cont_7_lstm1_cont_slice_6_split_0
+I1017 23:54:12.762483 29508 net.cpp:380] lstm1_h_conted_6 -> h_conted_6
+I1017 23:54:12.762536 29508 net.cpp:122] Setting up lstm1_h_conted_6
+I1017 23:54:12.762542 29508 net.cpp:129] Top shape: 1 5 512 (2560)
+I1017 23:54:12.762547 29508 net.cpp:137] Memory required for data: 1567360
+I1017 23:54:12.762550 29508 layer_factory.hpp:77] Creating layer lstm1_transform_7
+I1017 23:54:12.762557 29508 net.cpp:84] Creating Layer lstm1_transform_7
+I1017 23:54:12.762562 29508 net.cpp:406] lstm1_transform_7 <- h_conted_6
+I1017 23:54:12.762569 29508 net.cpp:380] lstm1_transform_7 -> W_hc_h_6
+I1017 23:54:12.773782 29508 net.cpp:122] Setting up lstm1_transform_7
+I1017 23:54:12.773808 29508 net.cpp:129] Top shape: 1 5 2048 (10240)
+I1017 23:54:12.773813 29508 net.cpp:137] Memory required for data: 1608320
+I1017 23:54:12.773820 29508 net.cpp:465] Sharing parameters 'W_hc' owned by layer 'lstm1_transform_1', param index 0
+I1017 23:54:12.773825 29508 layer_factory.hpp:77] Creating layer lstm1_gate_input_7
+I1017 23:54:12.773835 29508 net.cpp:84] Creating Layer lstm1_gate_input_7
+I1017 23:54:12.773840 29508 net.cpp:406] lstm1_gate_input_7 <- W_hc_h_6
+I1017 23:54:12.773846 29508 net.cpp:406] lstm1_gate_input_7 <- W_xc_x_7
+I1017 23:54:12.773866 29508 net.cpp:380] lstm1_gate_input_7 -> gate_input_7
+I1017 23:54:12.773892 29508 net.cpp:122] Setting up lstm1_gate_input_7
+I1017 23:54:12.773910 29508 net.cpp:129] Top shape: 1 5 2048 (10240)
+I1017 23:54:12.773913 29508 net.cpp:137] Memory required for data: 1649280
+I1017 23:54:12.773918 29508 layer_factory.hpp:77] Creating layer lstm1_unit_7
+I1017 23:54:12.773927 29508 net.cpp:84] Creating Layer lstm1_unit_7
+I1017 23:54:12.773931 29508 net.cpp:406] lstm1_unit_7 <- c_6
+I1017 23:54:12.773937 29508 net.cpp:406] lstm1_unit_7 <- gate_input_7
+I1017 23:54:12.773942 29508 net.cpp:406] lstm1_unit_7 <- cont_7_lstm1_cont_slice_6_split_1
+I1017 23:54:12.773948 29508 net.cpp:380] lstm1_unit_7 -> c_7
+I1017 23:54:12.773955 29508 net.cpp:380] lstm1_unit_7 -> h_7
+I1017 23:54:12.774001 29508 net.cpp:122] Setting up lstm1_unit_7
+I1017 23:54:12.774010 29508 net.cpp:129] Top shape: 1 5 512 (2560)
+I1017 23:54:12.774015 29508 net.cpp:129] Top shape: 1 5 512 (2560)
+I1017 23:54:12.774019 29508 net.cpp:137] Memory required for data: 1669760
+I1017 23:54:12.774024 29508 layer_factory.hpp:77] Creating layer h_7_lstm1_unit_7_1_split
+I1017 23:54:12.774029 29508 net.cpp:84] Creating Layer h_7_lstm1_unit_7_1_split
+I1017 23:54:12.774034 29508 net.cpp:406] h_7_lstm1_unit_7_1_split <- h_7
+I1017 23:54:12.774039 29508 net.cpp:380] h_7_lstm1_unit_7_1_split -> h_7_lstm1_unit_7_1_split_0
+I1017 23:54:12.774046 29508 net.cpp:380] h_7_lstm1_unit_7_1_split -> h_7_lstm1_unit_7_1_split_1
+I1017 23:54:12.774080 29508 net.cpp:122] Setting up h_7_lstm1_unit_7_1_split
+I1017 23:54:12.774089 29508 net.cpp:129] Top shape: 1 5 512 (2560)
+I1017 23:54:12.774094 29508 net.cpp:129] Top shape: 1 5 512 (2560)
+I1017 23:54:12.774098 29508 net.cpp:137] Memory required for data: 1690240
+I1017 23:54:12.774102 29508 layer_factory.hpp:77] Creating layer lstm1_h_conted_7
+I1017 23:54:12.774109 29508 net.cpp:84] Creating Layer lstm1_h_conted_7
+I1017 23:54:12.774114 29508 net.cpp:406] lstm1_h_conted_7 <- h_7_lstm1_unit_7_1_split_0
+I1017 23:54:12.774119 29508 net.cpp:406] lstm1_h_conted_7 <- cont_8_lstm1_cont_slice_7_split_0
+I1017 23:54:12.774125 29508 net.cpp:380] lstm1_h_conted_7 -> h_conted_7
+I1017 23:54:12.774181 29508 net.cpp:122] Setting up lstm1_h_conted_7
+I1017 23:54:12.774189 29508 net.cpp:129] Top shape: 1 5 512 (2560)
+I1017 23:54:12.774194 29508 net.cpp:137] Memory required for data: 1700480
+I1017 23:54:12.774197 29508 layer_factory.hpp:77] Creating layer lstm1_transform_8
+I1017 23:54:12.774215 29508 net.cpp:84] Creating Layer lstm1_transform_8
+I1017 23:54:12.774220 29508 net.cpp:406] lstm1_transform_8 <- h_conted_7
+I1017 23:54:12.774227 29508 net.cpp:380] lstm1_transform_8 -> W_hc_h_7
+I1017 23:54:12.785836 29508 net.cpp:122] Setting up lstm1_transform_8
+I1017 23:54:12.785851 29508 net.cpp:129] Top shape: 1 5 2048 (10240)
+I1017 23:54:12.785866 29508 net.cpp:137] Memory required for data: 1741440
+I1017 23:54:12.785871 29508 net.cpp:465] Sharing parameters 'W_hc' owned by layer 'lstm1_transform_1', param index 0
+I1017 23:54:12.785876 29508 layer_factory.hpp:77] Creating layer lstm1_gate_input_8
+I1017 23:54:12.785882 29508 net.cpp:84] Creating Layer lstm1_gate_input_8
+I1017 23:54:12.785887 29508 net.cpp:406] lstm1_gate_input_8 <- W_hc_h_7
+I1017 23:54:12.785892 29508 net.cpp:406] lstm1_gate_input_8 <- W_xc_x_8
+I1017 23:54:12.785898 29508 net.cpp:380] lstm1_gate_input_8 -> gate_input_8
+I1017 23:54:12.785925 29508 net.cpp:122] Setting up lstm1_gate_input_8
+I1017 23:54:12.785933 29508 net.cpp:129] Top shape: 1 5 2048 (10240)
+I1017 23:54:12.785938 29508 net.cpp:137] Memory required for data: 1782400
+I1017 23:54:12.785941 29508 layer_factory.hpp:77] Creating layer lstm1_unit_8
+I1017 23:54:12.785948 29508 net.cpp:84] Creating Layer lstm1_unit_8
+I1017 23:54:12.785951 29508 net.cpp:406] lstm1_unit_8 <- c_7
+I1017 23:54:12.785957 29508 net.cpp:406] lstm1_unit_8 <- gate_input_8
+I1017 23:54:12.785961 29508 net.cpp:406] lstm1_unit_8 <- cont_8_lstm1_cont_slice_7_split_1
+I1017 23:54:12.785967 29508 net.cpp:380] lstm1_unit_8 -> c_8
+I1017 23:54:12.785974 29508 net.cpp:380] lstm1_unit_8 -> h_8
+I1017 23:54:12.786015 29508 net.cpp:122] Setting up lstm1_unit_8
+I1017 23:54:12.786023 29508 net.cpp:129] Top shape: 1 5 512 (2560)
+I1017 23:54:12.786027 29508 net.cpp:129] Top shape: 1 5 512 (2560)
+I1017 23:54:12.786031 29508 net.cpp:137] Memory required for data: 1802880
+I1017 23:54:12.786036 29508 layer_factory.hpp:77] Creating layer lstm1_
+I1017 23:54:12.786042 29508 net.cpp:84] Creating Layer lstm1_
+I1017 23:54:12.786046 29508 net.cpp:406] lstm1_ <- c_8
+I1017 23:54:12.786052 29508 net.cpp:380] lstm1_ -> c_T
+I1017 23:54:12.786072 29508 net.cpp:122] Setting up lstm1_
+I1017 23:54:12.786078 29508 net.cpp:129] Top shape: 1 5 512 (2560)
+I1017 23:54:12.786082 29508 net.cpp:137] Memory required for data: 1813120
+I1017 23:54:12.786085 29508 layer_factory.hpp:77] Creating layer lstm1_h_concat
+I1017 23:54:12.786094 29508 net.cpp:84] Creating Layer lstm1_h_concat
+I1017 23:54:12.786098 29508 net.cpp:406] lstm1_h_concat <- h_1_lstm1_unit_1_1_split_1
+I1017 23:54:12.786103 29508 net.cpp:406] lstm1_h_concat <- h_2_lstm1_unit_2_1_split_1
+I1017 23:54:12.786108 29508 net.cpp:406] lstm1_h_concat <- h_3_lstm1_unit_3_1_split_1
+I1017 23:54:12.786113 29508 net.cpp:406] lstm1_h_concat <- h_4_lstm1_unit_4_1_split_1
+I1017 23:54:12.786118 29508 net.cpp:406] lstm1_h_concat <- h_5_lstm1_unit_5_1_split_1
+I1017 23:54:12.786123 29508 net.cpp:406] lstm1_h_concat <- h_6_lstm1_unit_6_1_split_1
+I1017 23:54:12.786128 29508 net.cpp:406] lstm1_h_concat <- h_7_lstm1_unit_7_1_split_1
+I1017 23:54:12.786133 29508 net.cpp:406] lstm1_h_concat <- h_8
+I1017 23:54:12.786137 29508 net.cpp:380] lstm1_h_concat -> h
+I1017 23:54:12.786170 29508 net.cpp:122] Setting up lstm1_h_concat
+I1017 23:54:12.786177 29508 net.cpp:129] Top shape: 8 5 512 (20480)
+I1017 23:54:12.786180 29508 net.cpp:137] Memory required for data: 1895040
+I1017 23:54:12.786185 29508 layer_factory.hpp:77] Creating layer h_pseudoloss
+I1017 23:54:12.786193 29508 net.cpp:84] Creating Layer h_pseudoloss
+I1017 23:54:12.786197 29508 net.cpp:406] h_pseudoloss <- h
+I1017 23:54:12.786203 29508 net.cpp:380] h_pseudoloss -> h_pseudoloss
+I1017 23:54:12.786273 29508 net.cpp:122] Setting up h_pseudoloss
+I1017 23:54:12.786283 29508 net.cpp:129] Top shape: (1)
+I1017 23:54:12.786286 29508 net.cpp:132]     with loss weight 1
+I1017 23:54:12.786315 29508 net.cpp:137] Memory required for data: 1895044
+I1017 23:54:12.786320 29508 net.cpp:198] h_pseudoloss needs backward computation.
+I1017 23:54:12.786329 29508 net.cpp:198] lstm1_h_concat needs backward computation.
+I1017 23:54:12.786340 29508 net.cpp:200] lstm1_ does not need backward computation.
+I1017 23:54:12.786345 29508 net.cpp:198] lstm1_unit_8 needs backward computation.
+I1017 23:54:12.786350 29508 net.cpp:198] lstm1_gate_input_8 needs backward computation.
+I1017 23:54:12.786355 29508 net.cpp:198] lstm1_transform_8 needs backward computation.
+I1017 23:54:12.786358 29508 net.cpp:198] lstm1_h_conted_7 needs backward computation.
+I1017 23:54:12.786362 29508 net.cpp:198] h_7_lstm1_unit_7_1_split needs backward computation.
+I1017 23:54:12.786366 29508 net.cpp:198] lstm1_unit_7 needs backward computation.
+I1017 23:54:12.786371 29508 net.cpp:198] lstm1_gate_input_7 needs backward computation.
+I1017 23:54:12.786375 29508 net.cpp:198] lstm1_transform_7 needs backward computation.
+I1017 23:54:12.786379 29508 net.cpp:198] lstm1_h_conted_6 needs backward computation.
+I1017 23:54:12.786384 29508 net.cpp:198] h_6_lstm1_unit_6_1_split needs backward computation.
+I1017 23:54:12.786388 29508 net.cpp:198] lstm1_unit_6 needs backward computation.
+I1017 23:54:12.786393 29508 net.cpp:198] lstm1_gate_input_6 needs backward computation.
+I1017 23:54:12.786397 29508 net.cpp:198] lstm1_transform_6 needs backward computation.
+I1017 23:54:12.786401 29508 net.cpp:198] lstm1_h_conted_5 needs backward computation.
+I1017 23:54:12.786406 29508 net.cpp:198] h_5_lstm1_unit_5_1_split needs backward computation.
+I1017 23:54:12.786412 29508 net.cpp:198] lstm1_unit_5 needs backward computation.
+I1017 23:54:12.786417 29508 net.cpp:198] lstm1_gate_input_5 needs backward computation.
+I1017 23:54:12.786422 29508 net.cpp:198] lstm1_transform_5 needs backward computation.
+I1017 23:54:12.786425 29508 net.cpp:198] lstm1_h_conted_4 needs backward computation.
+I1017 23:54:12.786430 29508 net.cpp:198] h_4_lstm1_unit_4_1_split needs backward computation.
+I1017 23:54:12.786434 29508 net.cpp:198] lstm1_unit_4 needs backward computation.
+I1017 23:54:12.786438 29508 net.cpp:198] lstm1_gate_input_4 needs backward computation.
+I1017 23:54:12.786443 29508 net.cpp:198] lstm1_transform_4 needs backward computation.
+I1017 23:54:12.786448 29508 net.cpp:198] lstm1_h_conted_3 needs backward computation.
+I1017 23:54:12.786453 29508 net.cpp:198] h_3_lstm1_unit_3_1_split needs backward computation.
+I1017 23:54:12.786456 29508 net.cpp:198] lstm1_unit_3 needs backward computation.
+I1017 23:54:12.786460 29508 net.cpp:198] lstm1_gate_input_3 needs backward computation.
+I1017 23:54:12.786465 29508 net.cpp:198] lstm1_transform_3 needs backward computation.
+I1017 23:54:12.786469 29508 net.cpp:198] lstm1_h_conted_2 needs backward computation.
+I1017 23:54:12.786474 29508 net.cpp:198] h_2_lstm1_unit_2_1_split needs backward computation.
+I1017 23:54:12.786478 29508 net.cpp:198] lstm1_unit_2 needs backward computation.
+I1017 23:54:12.786483 29508 net.cpp:198] lstm1_gate_input_2 needs backward computation.
+I1017 23:54:12.786486 29508 net.cpp:198] lstm1_transform_2 needs backward computation.
+I1017 23:54:12.786491 29508 net.cpp:198] lstm1_h_conted_1 needs backward computation.
+I1017 23:54:12.786495 29508 net.cpp:198] h_1_lstm1_unit_1_1_split needs backward computation.
+I1017 23:54:12.786499 29508 net.cpp:198] lstm1_unit_1 needs backward computation.
+I1017 23:54:12.786506 29508 net.cpp:198] lstm1_gate_input_1 needs backward computation.
+I1017 23:54:12.786510 29508 net.cpp:198] lstm1_transform_1 needs backward computation.
+I1017 23:54:12.786515 29508 net.cpp:200] lstm1_h_conted_0 does not need backward computation.
+I1017 23:54:12.786520 29508 net.cpp:198] lstm1_W_xc_x_slice needs backward computation.
+I1017 23:54:12.786525 29508 net.cpp:198] lstm1_x_transform needs backward computation.
+I1017 23:54:12.786530 29508 net.cpp:200] cont_8_lstm1_cont_slice_7_split does not need backward computation.
+I1017 23:54:12.786535 29508 net.cpp:200] cont_7_lstm1_cont_slice_6_split does not need backward computation.
+I1017 23:54:12.786540 29508 net.cpp:200] cont_6_lstm1_cont_slice_5_split does not need backward computation.
+I1017 23:54:12.786545 29508 net.cpp:200] cont_5_lstm1_cont_slice_4_split does not need backward computation.
+I1017 23:54:12.786550 29508 net.cpp:200] cont_4_lstm1_cont_slice_3_split does not need backward computation.
+I1017 23:54:12.786553 29508 net.cpp:200] cont_3_lstm1_cont_slice_2_split does not need backward computation.
+I1017 23:54:12.786558 29508 net.cpp:200] cont_2_lstm1_cont_slice_1_split does not need backward computation.
+I1017 23:54:12.786562 29508 net.cpp:200] cont_1_lstm1_cont_slice_0_split does not need backward computation.
+I1017 23:54:12.786568 29508 net.cpp:200] lstm1_cont_slice does not need backward computation.
+I1017 23:54:12.786573 29508 net.cpp:200] lstm1_ does not need backward computation.
+I1017 23:54:12.786577 29508 net.cpp:200] lstm1_ does not need backward computation.
+I1017 23:54:12.786581 29508 net.cpp:242] This network produces output c_T
+I1017 23:54:12.786584 29508 net.cpp:242] This network produces output h_pseudoloss
+I1017 23:54:12.792594 29508 net.cpp:255] Network initialization done.
+I1017 23:54:12.792768 29508 recurrent_layer.cpp:150] Adding parameter 0: W_xc
+I1017 23:54:12.792778 29508 recurrent_layer.cpp:150] Adding parameter 1: b_c
+I1017 23:54:12.792781 29508 recurrent_layer.cpp:150] Adding parameter 2: W_hc
+I1017 23:54:12.792907 29508 net.cpp:122] Setting up lstm1
+I1017 23:54:12.792919 29508 net.cpp:129] Top shape: 8 5 512 (20480)
+I1017 23:54:12.792924 29508 net.cpp:137] Memory required for data: 577188500
+I1017 23:54:12.792934 29508 layer_factory.hpp:77] Creating layer lstm1-drop
+I1017 23:54:12.792944 29508 net.cpp:84] Creating Layer lstm1-drop
+I1017 23:54:12.792950 29508 net.cpp:406] lstm1-drop <- lstm1
+I1017 23:54:12.792956 29508 net.cpp:380] lstm1-drop -> lstm1-drop
+I1017 23:54:12.792997 29508 net.cpp:122] Setting up lstm1-drop
+I1017 23:54:12.793006 29508 net.cpp:129] Top shape: 8 5 512 (20480)
+I1017 23:54:12.793010 29508 net.cpp:137] Memory required for data: 577270420
+I1017 23:54:12.793015 29508 layer_factory.hpp:77] Creating layer fc-final
+I1017 23:54:12.793025 29508 net.cpp:84] Creating Layer fc-final
+I1017 23:54:12.793028 29508 net.cpp:406] fc-final <- lstm1-drop
+I1017 23:54:12.793035 29508 net.cpp:380] fc-final -> fc-final
+I1017 23:54:12.793345 29508 net.cpp:122] Setting up fc-final
+I1017 23:54:12.793368 29508 net.cpp:129] Top shape: 8 5 10 (400)
+I1017 23:54:12.793372 29508 net.cpp:137] Memory required for data: 577272020
+I1017 23:54:12.793391 29508 layer_factory.hpp:77] Creating layer fc-final_fc-final_0_split
+I1017 23:54:12.793397 29508 net.cpp:84] Creating Layer fc-final_fc-final_0_split
+I1017 23:54:12.793402 29508 net.cpp:406] fc-final_fc-final_0_split <- fc-final
+I1017 23:54:12.793409 29508 net.cpp:380] fc-final_fc-final_0_split -> fc-final_fc-final_0_split_0
+I1017 23:54:12.793416 29508 net.cpp:380] fc-final_fc-final_0_split -> fc-final_fc-final_0_split_1
+I1017 23:54:12.793462 29508 net.cpp:122] Setting up fc-final_fc-final_0_split
+I1017 23:54:12.793468 29508 net.cpp:129] Top shape: 8 5 10 (400)
+I1017 23:54:12.793473 29508 net.cpp:129] Top shape: 8 5 10 (400)
+I1017 23:54:12.793478 29508 net.cpp:137] Memory required for data: 577275220
+I1017 23:54:12.793481 29508 layer_factory.hpp:77] Creating layer loss
+I1017 23:54:12.793503 29508 net.cpp:84] Creating Layer loss
+I1017 23:54:12.793506 29508 net.cpp:406] loss <- fc-final_fc-final_0_split_0
+I1017 23:54:12.793512 29508 net.cpp:406] loss <- reshape-label_label_tran_0_split_0
+I1017 23:54:12.793519 29508 net.cpp:380] loss -> loss
+I1017 23:54:12.793537 29508 layer_factory.hpp:77] Creating layer loss
+I1017 23:54:12.793623 29508 net.cpp:122] Setting up loss
+I1017 23:54:12.793632 29508 net.cpp:129] Top shape: (1)
+I1017 23:54:12.793637 29508 net.cpp:132]     with loss weight 1
+I1017 23:54:12.793643 29508 net.cpp:137] Memory required for data: 577275224
+I1017 23:54:12.793648 29508 layer_factory.hpp:77] Creating layer accuracy
+I1017 23:54:12.793658 29508 net.cpp:84] Creating Layer accuracy
+I1017 23:54:12.793663 29508 net.cpp:406] accuracy <- fc-final_fc-final_0_split_1
+I1017 23:54:12.793668 29508 net.cpp:406] accuracy <- reshape-label_label_tran_0_split_1
+I1017 23:54:12.793674 29508 net.cpp:380] accuracy -> accuracy
+I1017 23:54:12.793689 29508 net.cpp:122] Setting up accuracy
+I1017 23:54:12.793694 29508 net.cpp:129] Top shape: (1)
+I1017 23:54:12.793699 29508 net.cpp:137] Memory required for data: 577275228
+I1017 23:54:12.793704 29508 net.cpp:200] accuracy does not need backward computation.
+I1017 23:54:12.793707 29508 net.cpp:198] loss needs backward computation.
+I1017 23:54:12.793712 29508 net.cpp:198] fc-final_fc-final_0_split needs backward computation.
+I1017 23:54:12.793716 29508 net.cpp:198] fc-final needs backward computation.
+I1017 23:54:12.793720 29508 net.cpp:198] lstm1-drop needs backward computation.
+I1017 23:54:12.793725 29508 net.cpp:198] lstm1 needs backward computation.
+I1017 23:54:12.793730 29508 net.cpp:198] conv5_3_tran needs backward computation.
+I1017 23:54:12.793735 29508 net.cpp:198] conv5_3_re needs backward computation.
+I1017 23:54:12.793740 29508 net.cpp:198] relu5_3 needs backward computation.
+I1017 23:54:12.793745 29508 net.cpp:198] conv5_3 needs backward computation.
+I1017 23:54:12.793748 29508 net.cpp:198] relu5_2 needs backward computation.
+I1017 23:54:12.793753 29508 net.cpp:198] conv5_2 needs backward computation.
+I1017 23:54:12.793757 29508 net.cpp:198] relu5_1 needs backward computation.
+I1017 23:54:12.793761 29508 net.cpp:198] conv5_1 needs backward computation.
+I1017 23:54:12.793766 29508 net.cpp:198] pool4 needs backward computation.
+I1017 23:54:12.793771 29508 net.cpp:198] relu4_3 needs backward computation.
+I1017 23:54:12.793774 29508 net.cpp:198] conv4_3 needs backward computation.
+I1017 23:54:12.793779 29508 net.cpp:198] relu4_2 needs backward computation.
+I1017 23:54:12.793783 29508 net.cpp:198] conv4_2 needs backward computation.
+I1017 23:54:12.793799 29508 net.cpp:198] relu4_1 needs backward computation.
+I1017 23:54:12.793803 29508 net.cpp:198] conv4_1 needs backward computation.
+I1017 23:54:12.793808 29508 net.cpp:198] pool3 needs backward computation.
+I1017 23:54:12.793812 29508 net.cpp:198] relu3_3 needs backward computation.
+I1017 23:54:12.793817 29508 net.cpp:198] conv3_3 needs backward computation.
+I1017 23:54:12.793820 29508 net.cpp:198] relu3_2 needs backward computation.
+I1017 23:54:12.793824 29508 net.cpp:198] conv3_2 needs backward computation.
+I1017 23:54:12.793829 29508 net.cpp:198] relu3_1 needs backward computation.
+I1017 23:54:12.793833 29508 net.cpp:198] conv3_1 needs backward computation.
+I1017 23:54:12.793838 29508 net.cpp:198] pool2 needs backward computation.
+I1017 23:54:12.793841 29508 net.cpp:198] relu2_2 needs backward computation.
+I1017 23:54:12.793845 29508 net.cpp:198] conv2_2 needs backward computation.
+I1017 23:54:12.793850 29508 net.cpp:198] relu2_1 needs backward computation.
+I1017 23:54:12.793854 29508 net.cpp:198] conv2_1 needs backward computation.
+I1017 23:54:12.793859 29508 net.cpp:198] pool1 needs backward computation.
+I1017 23:54:12.793864 29508 net.cpp:198] relu1_2 needs backward computation.
+I1017 23:54:12.793867 29508 net.cpp:198] conv1_2 needs backward computation.
+I1017 23:54:12.793871 29508 net.cpp:198] relu1_1 needs backward computation.
+I1017 23:54:12.793876 29508 net.cpp:198] conv1_1 needs backward computation.
+I1017 23:54:12.793881 29508 net.cpp:200] reshape-label_label_tran_0_split does not need backward computation.
+I1017 23:54:12.793886 29508 net.cpp:200] label_tran does not need backward computation.
+I1017 23:54:12.793892 29508 net.cpp:200] data does not need backward computation.
+I1017 23:54:12.793896 29508 net.cpp:242] This network produces output accuracy
+I1017 23:54:12.793900 29508 net.cpp:242] This network produces output loss
+I1017 23:54:12.793923 29508 net.cpp:255] Network initialization done.
+I1017 23:54:12.794744 29508 solver.cpp:172] Creating test net (#0) specified by net file: ./Def/deploy_vgg16_lsun_lstm_conv5_sort_max_clip.prototxt
+I1017 23:54:12.794816 29508 net.cpp:294] The NetState phase (1) differed from the phase (0) specified by a rule in layer data
+I1017 23:54:12.794996 29508 net.cpp:51] Initializing net from parameters: 
+name: "VGG-Places365"
+state {
+  phase: TEST
+  stage: "test-on-test"
+}
+layer {
+  name: "data"
+  type: "ImageData"
+  top: "data"
+  top: "label"
+  include {
+    phase: TEST
+  }
+  transform_param {
+    mirror: false
+    crop_size: 224
+    mean_value: 104
+    mean_value: 117
+    mean_value: 123
+  }
+  image_data_param {
+    source: "../Data/lsun_val_list.txt"
+    batch_size: 150
+    new_height: 256
+    new_width: 256
+  }
+}
+layer {
+  name: "Silence"
+  type: "Silence"
+  bottom: "label"
+  include {
+    phase: TEST
+  }
+}
+layer {
+  name: "label_tran"
+  type: "Python"
+  bottom: "label"
+  top: "reshape-label"
+  top: "clip_markers"
+  python_param {
+    module: "data_preparation_sort_max_clip"
+    layer: "ReshapeLabel"
+  }
+}
+layer {
+  name: "conv1_1"
+  type: "Convolution"
+  bottom: "data"
+  top: "conv1_1"
+  convolution_param {
+    num_output: 64
+    pad: 1
+    kernel_size: 3
+  }
+}
+layer {
+  name: "relu1_1"
+  type: "ReLU"
+  bottom: "conv1_1"
+  top: "conv1_1"
+}
+layer {
+  name: "conv1_2"
+  type: "Convolution"
+  bottom: "conv1_1"
+  top: "conv1_2"
+  convolution_param {
+    num_output: 64
+    pad: 1
+    kernel_size: 3
+  }
+}
+layer {
+  name: "relu1_2"
+  type: "ReLU"
+  bottom: "conv1_2"
+  top: "conv1_2"
+}
+layer {
+  name: "pool1"
+  type: "Pooling"
+  bottom: "conv1_2"
+  top: "pool1"
+  pooling_param {
+    pool: MAX
+    kernel_size: 2
+    stride: 2
+  }
+}
+layer {
+  name: "conv2_1"
+  type: "Convolution"
+  bottom: "pool1"
+  top: "conv2_1"
+  convolution_param {
+    num_output: 128
+    pad: 1
+    kernel_size: 3
+  }
+}
+layer {
+  name: "relu2_1"
+  type: "ReLU"
+  bottom: "conv2_1"
+  top: "conv2_1"
+}
+layer {
+  name: "conv2_2"
+  type: "Convolution"
+  bottom: "conv2_1"
+  top: "conv2_2"
+  convolution_param {
+    num_output: 128
+    pad: 1
+    kernel_size: 3
+  }
+}
+layer {
+  name: "relu2_2"
+  type: "ReLU"
+  bottom: "conv2_2"
+  top: "conv2_2"
+}
+layer {
+  name: "pool2"
+  type: "Pooling"
+  bottom: "conv2_2"
+  top: "pool2"
+  pooling_param {
+    pool: MAX
+    kernel_size: 2
+    stride: 2
+  }
+}
+layer {
+  name: "conv3_1"
+  type: "Convolution"
+  bottom: "pool2"
+  top: "conv3_1"
+  convolution_param {
+    num_output: 256
+    pad: 1
+    kernel_size: 3
+  }
+}
+layer {
+  name: "relu3_1"
+  type: "ReLU"
+  bottom: "conv3_1"
+  top: "conv3_1"
+}
+layer {
+  name: "conv3_2"
+  type: "Convolution"
+  bottom: "conv3_1"
+  top: "conv3_2"
+  convolution_param {
+    num_output: 256
+    pad: 1
+    kernel_size: 3
+  }
+}
+layer {
+  name: "relu3_2"
+  type: "ReLU"
+  bottom: "conv3_2"
+  top: "conv3_2"
+}
+layer {
+  name: "conv3_3"
+  type: "Convolution"
+  bottom: "conv3_2"
+  top: "conv3_3"
+  convolution_param {
+    num_output: 256
+    pad: 1
+    kernel_size: 3
+  }
+}
+layer {
+  name: "relu3_3"
+  type: "ReLU"
+  bottom: "conv3_3"
+  top: "conv3_3"
+}
+layer {
+  name: "pool3"
+  type: "Pooling"
+  bottom: "conv3_3"
+  top: "pool3"
+  pooling_param {
+    pool: MAX
+    kernel_size: 2
+    stride: 2
+  }
+}
+layer {
+  name: "conv4_1"
+  type: "Convolution"
+  bottom: "pool3"
+  top: "conv4_1"
+  convolution_param {
+    num_output: 512
+    pad: 1
+    kernel_size: 3
+  }
+}
+layer {
+  name: "relu4_1"
+  type: "ReLU"
+  bottom: "conv4_1"
+  top: "conv4_1"
+}
+layer {
+  name: "conv4_2"
+  type: "Convolution"
+  bottom: "conv4_1"
+  top: "conv4_2"
+  convolution_param {
+    num_output: 512
+    pad: 1
+    kernel_size: 3
+  }
+}
+layer {
+  name: "relu4_2"
+  type: "ReLU"
+  bottom: "conv4_2"
+  top: "conv4_2"
+}
+layer {
+  name: "conv4_3"
+  type: "Convolution"
+  bottom: "conv4_2"
+  top: "conv4_3"
+  convolution_param {
+    num_output: 512
+    pad: 1
+    kernel_size: 3
+  }
+}
+layer {
+  name: "relu4_3"
+  type: "ReLU"
+  bottom: "conv4_3"
+  top: "conv4_3"
+}
+layer {
+  name: "pool4"
+  type: "Pooling"
+  bottom: "conv4_3"
+  top: "pool4"
+  pooling_param {
+    pool: MAX
+    kernel_size: 2
+    stride: 2
+  }
+}
+layer {
+  name: "conv5_1"
+  type: "Convolution"
+  bottom: "pool4"
+  top: "conv5_1"
+  convolution_param {
+    num_output: 512
+    pad: 1
+    kernel_size: 3
+  }
+}
+layer {
+  name: "relu5_1"
+  type: "ReLU"
+  bottom: "conv5_1"
+  top: "conv5_1"
+}
+layer {
+  name: "conv5_2"
+  type: "Convolution"
+  bottom: "conv5_1"
+  top: "conv5_2"
+  convolution_param {
+    num_output: 512
+    pad: 1
+    kernel_size: 3
+  }
+}
+layer {
+  name: "relu5_2"
+  type: "ReLU"
+  bottom: "conv5_2"
+  top: "conv5_2"
+}
+layer {
+  name: "conv5_3"
+  type: "Convolution"
+  bottom: "conv5_2"
+  top: "conv5_3"
+  convolution_param {
+    num_output: 512
+    pad: 1
+    kernel_size: 3
+  }
+}
+layer {
+  name: "relu5_3"
+  type: "ReLU"
+  bottom: "conv5_3"
+  top: "conv5_3"
+}
+layer {
+  name: "conv5_3_re"
+  type: "Reshape"
+  bottom: "conv5_3"
+  top: "conv5_3_re"
+  reshape_param {
+    shape {
+      dim: 0
+      dim: 0
+      dim: -1
+    }
+  }
+}
+layer {
+  name: "conv5_3_tran"
+  type: "Python"
+  bottom: "conv5_3_re"
+  top: "conv5_3_tran"
+  python_param {
+    module: "data_preparation_sort_max_clip"
+    layer: "DataTransposeSortMaxClip"
+  }
+}
+layer {
+  name: "lstm1"
+  type: "LSTM"
+  bottom: "conv5_3_tran"
+  bottom: "clip_markers"
+  top: "lstm1"
+  recurrent_param {
+    num_output: 512
+    weight_filler {
+      type: "uniform"
+      min: -0.01
+      max: 0.01
+    }
+    bias_filler {
+      type: "constant"
+      value: 0
+    }
+  }
+}
+layer {
+  name: "lstm1-drop"
+  type: "Dropout"
+  bottom: "lstm1"
+  top: "lstm1-drop"
+  dropout_param {
+    dropout_ratio: 0.5
+  }
+}
+layer {
+  name: "fc-final"
+  type: "InnerProduct"
+  bottom: "lstm1-drop"
+  top: "fc-final"
+  param {
+    lr_mult: 1
+    decay_mult: 1
+  }
+  param {
+    lr_mult: 2
+    decay_mult: 0
+  }
+  inner_product_param {
+    num_output: 10
+    weight_filler {
+      type: "gaussian"
+      std: 0.01
+    }
+    bias_filler {
+      type: "constant"
+      value: 0
+    }
+    axis: 2
+  }
+}
+layer {
+  name: "loss"
+  type: "SoftmaxWithLoss"
+  bottom: "fc-final"
+  bottom: "reshape-label"
+  top: "loss"
+  softmax_param {
+    axis: 2
+  }
+}
+layer {
+  name: "accuracy"
+  type: "Accuracy"
+  bottom: "fc-final"
+  bottom: "reshape-label"
+  top: "accuracy"
+  accuracy_param {
+    axis: 2
+  }
+}
+I1017 23:54:12.795147 29508 layer_factory.hpp:77] Creating layer data
+I1017 23:54:12.795163 29508 net.cpp:84] Creating Layer data
+I1017 23:54:12.795169 29508 net.cpp:380] data -> data
+I1017 23:54:12.795179 29508 net.cpp:380] data -> label
+I1017 23:54:12.795188 29508 image_data_layer.cpp:38] Opening file ../Data/lsun_val_list.txt
+I1017 23:54:12.796098 29508 image_data_layer.cpp:63] A total of 3000 images.
+I1017 23:54:12.797533 29508 image_data_layer.cpp:90] output data size: 150,3,224,224
+I1017 23:54:13.014180 29508 net.cpp:122] Setting up data
+I1017 23:54:13.014246 29508 net.cpp:129] Top shape: 150 3 224 224 (22579200)
+I1017 23:54:13.014253 29508 net.cpp:129] Top shape: 150 (150)
+I1017 23:54:13.014257 29508 net.cpp:137] Memory required for data: 90317400
+I1017 23:54:13.014267 29508 layer_factory.hpp:77] Creating layer label_data_1_split
+I1017 23:54:13.014286 29508 net.cpp:84] Creating Layer label_data_1_split
+I1017 23:54:13.014294 29508 net.cpp:406] label_data_1_split <- label
+I1017 23:54:13.014318 29508 net.cpp:380] label_data_1_split -> label_data_1_split_0
+I1017 23:54:13.014334 29508 net.cpp:380] label_data_1_split -> label_data_1_split_1
+I1017 23:54:13.014622 29508 net.cpp:122] Setting up label_data_1_split
+I1017 23:54:13.014658 29508 net.cpp:129] Top shape: 150 (150)
+I1017 23:54:13.014665 29508 net.cpp:129] Top shape: 150 (150)
+I1017 23:54:13.014672 29508 net.cpp:137] Memory required for data: 90318600
+I1017 23:54:13.014679 29508 layer_factory.hpp:77] Creating layer Silence
+I1017 23:54:13.014703 29508 net.cpp:84] Creating Layer Silence
+I1017 23:54:13.014709 29508 net.cpp:406] Silence <- label_data_1_split_0
+I1017 23:54:13.014719 29508 net.cpp:122] Setting up Silence
+I1017 23:54:13.014729 29508 net.cpp:137] Memory required for data: 90318600
+I1017 23:54:13.014734 29508 layer_factory.hpp:77] Creating layer label_tran
+I1017 23:54:13.014843 29508 net.cpp:84] Creating Layer label_tran
+I1017 23:54:13.014860 29508 net.cpp:406] label_tran <- label_data_1_split_1
+I1017 23:54:13.014876 29508 net.cpp:380] label_tran -> reshape-label
+I1017 23:54:13.014901 29508 net.cpp:380] label_tran -> clip_markers
+I1017 23:54:13.015118 29508 net.cpp:122] Setting up label_tran
+I1017 23:54:13.015143 29508 net.cpp:129] Top shape: 8 150 (1200)
+I1017 23:54:13.015166 29508 net.cpp:129] Top shape: 8 150 (1200)
+I1017 23:54:13.015174 29508 net.cpp:137] Memory required for data: 90328200
+I1017 23:54:13.015183 29508 layer_factory.hpp:77] Creating layer reshape-label_label_tran_0_split
+I1017 23:54:13.015200 29508 net.cpp:84] Creating Layer reshape-label_label_tran_0_split
+I1017 23:54:13.015213 29508 net.cpp:406] reshape-label_label_tran_0_split <- reshape-label
+I1017 23:54:13.015228 29508 net.cpp:380] reshape-label_label_tran_0_split -> reshape-label_label_tran_0_split_0
+I1017 23:54:13.015244 29508 net.cpp:380] reshape-label_label_tran_0_split -> reshape-label_label_tran_0_split_1
+I1017 23:54:13.015316 29508 net.cpp:122] Setting up reshape-label_label_tran_0_split
+I1017 23:54:13.015332 29508 net.cpp:129] Top shape: 8 150 (1200)
+I1017 23:54:13.015342 29508 net.cpp:129] Top shape: 8 150 (1200)
+I1017 23:54:13.015354 29508 net.cpp:137] Memory required for data: 90337800
+I1017 23:54:13.015363 29508 layer_factory.hpp:77] Creating layer conv1_1
+I1017 23:54:13.015383 29508 net.cpp:84] Creating Layer conv1_1
+I1017 23:54:13.015395 29508 net.cpp:406] conv1_1 <- data
+I1017 23:54:13.015409 29508 net.cpp:380] conv1_1 -> conv1_1
+I1017 23:54:13.015966 29508 net.cpp:122] Setting up conv1_1
+I1017 23:54:13.015988 29508 net.cpp:129] Top shape: 150 64 224 224 (481689600)
+I1017 23:54:13.015997 29508 net.cpp:137] Memory required for data: 2017096200
+I1017 23:54:13.016021 29508 layer_factory.hpp:77] Creating layer relu1_1
+I1017 23:54:13.016072 29508 net.cpp:84] Creating Layer relu1_1
+I1017 23:54:13.016088 29508 net.cpp:406] relu1_1 <- conv1_1
+I1017 23:54:13.016103 29508 net.cpp:367] relu1_1 -> conv1_1 (in-place)
+I1017 23:54:13.016124 29508 net.cpp:122] Setting up relu1_1
+I1017 23:54:13.016140 29508 net.cpp:129] Top shape: 150 64 224 224 (481689600)
+I1017 23:54:13.016149 29508 net.cpp:137] Memory required for data: 3943854600
+I1017 23:54:13.016158 29508 layer_factory.hpp:77] Creating layer conv1_2
+I1017 23:54:13.016175 29508 net.cpp:84] Creating Layer conv1_2
+I1017 23:54:13.016185 29508 net.cpp:406] conv1_2 <- conv1_1
+I1017 23:54:13.016199 29508 net.cpp:380] conv1_2 -> conv1_2
+I1017 23:54:13.018054 29508 net.cpp:122] Setting up conv1_2
+I1017 23:54:13.018084 29508 net.cpp:129] Top shape: 150 64 224 224 (481689600)
+I1017 23:54:13.018095 29508 net.cpp:137] Memory required for data: 5870613000
+I1017 23:54:13.018116 29508 layer_factory.hpp:77] Creating layer relu1_2
+I1017 23:54:13.018136 29508 net.cpp:84] Creating Layer relu1_2
+I1017 23:54:13.018149 29508 net.cpp:406] relu1_2 <- conv1_2
+I1017 23:54:13.018165 29508 net.cpp:367] relu1_2 -> conv1_2 (in-place)
+I1017 23:54:13.018183 29508 net.cpp:122] Setting up relu1_2
+I1017 23:54:13.018198 29508 net.cpp:129] Top shape: 150 64 224 224 (481689600)
+I1017 23:54:13.018208 29508 net.cpp:137] Memory required for data: 7797371400
+I1017 23:54:13.018219 29508 layer_factory.hpp:77] Creating layer pool1
+I1017 23:54:13.018236 29508 net.cpp:84] Creating Layer pool1
+I1017 23:54:13.018255 29508 net.cpp:406] pool1 <- conv1_2
+I1017 23:54:13.018270 29508 net.cpp:380] pool1 -> pool1
+I1017 23:54:13.018364 29508 net.cpp:122] Setting up pool1
+I1017 23:54:13.018381 29508 net.cpp:129] Top shape: 150 64 112 112 (120422400)
+I1017 23:54:13.018389 29508 net.cpp:137] Memory required for data: 8279061000
+I1017 23:54:13.018399 29508 layer_factory.hpp:77] Creating layer conv2_1
+I1017 23:54:13.018419 29508 net.cpp:84] Creating Layer conv2_1
+I1017 23:54:13.018432 29508 net.cpp:406] conv2_1 <- pool1
+I1017 23:54:13.018446 29508 net.cpp:380] conv2_1 -> conv2_1
+I1017 23:54:13.020206 29508 net.cpp:122] Setting up conv2_1
+I1017 23:54:13.020237 29508 net.cpp:129] Top shape: 150 128 112 112 (240844800)
+I1017 23:54:13.020251 29508 net.cpp:137] Memory required for data: 9242440200
+I1017 23:54:13.020273 29508 layer_factory.hpp:77] Creating layer relu2_1
+I1017 23:54:13.020288 29508 net.cpp:84] Creating Layer relu2_1
+I1017 23:54:13.020299 29508 net.cpp:406] relu2_1 <- conv2_1
+I1017 23:54:13.020313 29508 net.cpp:367] relu2_1 -> conv2_1 (in-place)
+I1017 23:54:13.020334 29508 net.cpp:122] Setting up relu2_1
+I1017 23:54:13.020349 29508 net.cpp:129] Top shape: 150 128 112 112 (240844800)
+I1017 23:54:13.020357 29508 net.cpp:137] Memory required for data: 10205819400
+I1017 23:54:13.020366 29508 layer_factory.hpp:77] Creating layer conv2_2
+I1017 23:54:13.020382 29508 net.cpp:84] Creating Layer conv2_2
+I1017 23:54:13.020395 29508 net.cpp:406] conv2_2 <- conv2_1
+I1017 23:54:13.020408 29508 net.cpp:380] conv2_2 -> conv2_2
+I1017 23:54:13.021080 29508 net.cpp:122] Setting up conv2_2
+I1017 23:54:13.021098 29508 net.cpp:129] Top shape: 150 128 112 112 (240844800)
+I1017 23:54:13.021107 29508 net.cpp:137] Memory required for data: 11169198600
+I1017 23:54:13.021122 29508 layer_factory.hpp:77] Creating layer relu2_2
+I1017 23:54:13.021136 29508 net.cpp:84] Creating Layer relu2_2
+I1017 23:54:13.021145 29508 net.cpp:406] relu2_2 <- conv2_2
+I1017 23:54:13.021158 29508 net.cpp:367] relu2_2 -> conv2_2 (in-place)
+I1017 23:54:13.021173 29508 net.cpp:122] Setting up relu2_2
+I1017 23:54:13.021188 29508 net.cpp:129] Top shape: 150 128 112 112 (240844800)
+I1017 23:54:13.021196 29508 net.cpp:137] Memory required for data: 12132577800
+I1017 23:54:13.021205 29508 layer_factory.hpp:77] Creating layer pool2
+I1017 23:54:13.021219 29508 net.cpp:84] Creating Layer pool2
+I1017 23:54:13.021227 29508 net.cpp:406] pool2 <- conv2_2
+I1017 23:54:13.021245 29508 net.cpp:380] pool2 -> pool2
+I1017 23:54:13.028376 29508 net.cpp:122] Setting up pool2
+I1017 23:54:13.028399 29508 net.cpp:129] Top shape: 150 128 56 56 (60211200)
+I1017 23:54:13.028405 29508 net.cpp:137] Memory required for data: 12373422600
+I1017 23:54:13.028412 29508 layer_factory.hpp:77] Creating layer conv3_1
+I1017 23:54:13.028426 29508 net.cpp:84] Creating Layer conv3_1
+I1017 23:54:13.028434 29508 net.cpp:406] conv3_1 <- pool2
+I1017 23:54:13.028445 29508 net.cpp:380] conv3_1 -> conv3_1
+I1017 23:54:13.030614 29508 net.cpp:122] Setting up conv3_1
+I1017 23:54:13.030644 29508 net.cpp:129] Top shape: 150 256 56 56 (120422400)
+I1017 23:54:13.030654 29508 net.cpp:137] Memory required for data: 12855112200
+I1017 23:54:13.030685 29508 layer_factory.hpp:77] Creating layer relu3_1
+I1017 23:54:13.030709 29508 net.cpp:84] Creating Layer relu3_1
+I1017 23:54:13.030719 29508 net.cpp:406] relu3_1 <- conv3_1
+I1017 23:54:13.030735 29508 net.cpp:367] relu3_1 -> conv3_1 (in-place)
+I1017 23:54:13.030757 29508 net.cpp:122] Setting up relu3_1
+I1017 23:54:13.030771 29508 net.cpp:129] Top shape: 150 256 56 56 (120422400)
+I1017 23:54:13.030783 29508 net.cpp:137] Memory required for data: 13336801800
+I1017 23:54:13.030792 29508 layer_factory.hpp:77] Creating layer conv3_2
+I1017 23:54:13.030812 29508 net.cpp:84] Creating Layer conv3_2
+I1017 23:54:13.030822 29508 net.cpp:406] conv3_2 <- conv3_1
+I1017 23:54:13.030839 29508 net.cpp:380] conv3_2 -> conv3_2
+I1017 23:54:13.034106 29508 net.cpp:122] Setting up conv3_2
+I1017 23:54:13.034137 29508 net.cpp:129] Top shape: 150 256 56 56 (120422400)
+I1017 23:54:13.034145 29508 net.cpp:137] Memory required for data: 13818491400
+I1017 23:54:13.034160 29508 layer_factory.hpp:77] Creating layer relu3_2
+I1017 23:54:13.034175 29508 net.cpp:84] Creating Layer relu3_2
+I1017 23:54:13.034184 29508 net.cpp:406] relu3_2 <- conv3_2
+I1017 23:54:13.034198 29508 net.cpp:367] relu3_2 -> conv3_2 (in-place)
+I1017 23:54:13.034219 29508 net.cpp:122] Setting up relu3_2
+I1017 23:54:13.034230 29508 net.cpp:129] Top shape: 150 256 56 56 (120422400)
+I1017 23:54:13.034240 29508 net.cpp:137] Memory required for data: 14300181000
+I1017 23:54:13.034247 29508 layer_factory.hpp:77] Creating layer conv3_3
+I1017 23:54:13.034262 29508 net.cpp:84] Creating Layer conv3_3
+I1017 23:54:13.034274 29508 net.cpp:406] conv3_3 <- conv3_2
+I1017 23:54:13.034287 29508 net.cpp:380] conv3_3 -> conv3_3
+I1017 23:54:13.037660 29508 net.cpp:122] Setting up conv3_3
+I1017 23:54:13.037708 29508 net.cpp:129] Top shape: 150 256 56 56 (120422400)
+I1017 23:54:13.037719 29508 net.cpp:137] Memory required for data: 14781870600
+I1017 23:54:13.037737 29508 layer_factory.hpp:77] Creating layer relu3_3
+I1017 23:54:13.037757 29508 net.cpp:84] Creating Layer relu3_3
+I1017 23:54:13.037768 29508 net.cpp:406] relu3_3 <- conv3_3
+I1017 23:54:13.037783 29508 net.cpp:367] relu3_3 -> conv3_3 (in-place)
+I1017 23:54:13.037801 29508 net.cpp:122] Setting up relu3_3
+I1017 23:54:13.037817 29508 net.cpp:129] Top shape: 150 256 56 56 (120422400)
+I1017 23:54:13.037827 29508 net.cpp:137] Memory required for data: 15263560200
+I1017 23:54:13.037837 29508 layer_factory.hpp:77] Creating layer pool3
+I1017 23:54:13.037853 29508 net.cpp:84] Creating Layer pool3
+I1017 23:54:13.037864 29508 net.cpp:406] pool3 <- conv3_3
+I1017 23:54:13.037879 29508 net.cpp:380] pool3 -> pool3
+I1017 23:54:13.037962 29508 net.cpp:122] Setting up pool3
+I1017 23:54:13.037979 29508 net.cpp:129] Top shape: 150 256 28 28 (30105600)
+I1017 23:54:13.037991 29508 net.cpp:137] Memory required for data: 15383982600
+I1017 23:54:13.038000 29508 layer_factory.hpp:77] Creating layer conv4_1
+I1017 23:54:13.038020 29508 net.cpp:84] Creating Layer conv4_1
+I1017 23:54:13.038031 29508 net.cpp:406] conv4_1 <- pool3
+I1017 23:54:13.038046 29508 net.cpp:380] conv4_1 -> conv4_1
+I1017 23:54:13.043803 29508 net.cpp:122] Setting up conv4_1
+I1017 23:54:13.043836 29508 net.cpp:129] Top shape: 150 512 28 28 (60211200)
+I1017 23:54:13.043846 29508 net.cpp:137] Memory required for data: 15624827400
+I1017 23:54:13.043862 29508 layer_factory.hpp:77] Creating layer relu4_1
+I1017 23:54:13.043881 29508 net.cpp:84] Creating Layer relu4_1
+I1017 23:54:13.043892 29508 net.cpp:406] relu4_1 <- conv4_1
+I1017 23:54:13.043906 29508 net.cpp:367] relu4_1 -> conv4_1 (in-place)
+I1017 23:54:13.043926 29508 net.cpp:122] Setting up relu4_1
+I1017 23:54:13.043941 29508 net.cpp:129] Top shape: 150 512 28 28 (60211200)
+I1017 23:54:13.043951 29508 net.cpp:137] Memory required for data: 15865672200
+I1017 23:54:13.043962 29508 layer_factory.hpp:77] Creating layer conv4_2
+I1017 23:54:13.043979 29508 net.cpp:84] Creating Layer conv4_2
+I1017 23:54:13.043990 29508 net.cpp:406] conv4_2 <- conv4_1
+I1017 23:54:13.044006 29508 net.cpp:380] conv4_2 -> conv4_2
+I1017 23:54:13.051877 29508 net.cpp:122] Setting up conv4_2
+I1017 23:54:13.051899 29508 net.cpp:129] Top shape: 150 512 28 28 (60211200)
+I1017 23:54:13.051904 29508 net.cpp:137] Memory required for data: 16106517000
+I1017 23:54:13.051920 29508 layer_factory.hpp:77] Creating layer relu4_2
+I1017 23:54:13.051930 29508 net.cpp:84] Creating Layer relu4_2
+I1017 23:54:13.051935 29508 net.cpp:406] relu4_2 <- conv4_2
+I1017 23:54:13.051944 29508 net.cpp:367] relu4_2 -> conv4_2 (in-place)
+I1017 23:54:13.051954 29508 net.cpp:122] Setting up relu4_2
+I1017 23:54:13.051960 29508 net.cpp:129] Top shape: 150 512 28 28 (60211200)
+I1017 23:54:13.051965 29508 net.cpp:137] Memory required for data: 16347361800
+I1017 23:54:13.051970 29508 layer_factory.hpp:77] Creating layer conv4_3
+I1017 23:54:13.051980 29508 net.cpp:84] Creating Layer conv4_3
+I1017 23:54:13.051985 29508 net.cpp:406] conv4_3 <- conv4_2
+I1017 23:54:13.051992 29508 net.cpp:380] conv4_3 -> conv4_3
+I1017 23:54:13.058488 29508 net.cpp:122] Setting up conv4_3
+I1017 23:54:13.058516 29508 net.cpp:129] Top shape: 150 512 28 28 (60211200)
+I1017 23:54:13.058521 29508 net.cpp:137] Memory required for data: 16588206600
+I1017 23:54:13.058531 29508 layer_factory.hpp:77] Creating layer relu4_3
+I1017 23:54:13.058540 29508 net.cpp:84] Creating Layer relu4_3
+I1017 23:54:13.058547 29508 net.cpp:406] relu4_3 <- conv4_3
+I1017 23:54:13.058554 29508 net.cpp:367] relu4_3 -> conv4_3 (in-place)
+I1017 23:54:13.058563 29508 net.cpp:122] Setting up relu4_3
+I1017 23:54:13.058573 29508 net.cpp:129] Top shape: 150 512 28 28 (60211200)
+I1017 23:54:13.058578 29508 net.cpp:137] Memory required for data: 16829051400
+I1017 23:54:13.058586 29508 layer_factory.hpp:77] Creating layer pool4
+I1017 23:54:13.058595 29508 net.cpp:84] Creating Layer pool4
+I1017 23:54:13.058600 29508 net.cpp:406] pool4 <- conv4_3
+I1017 23:54:13.058609 29508 net.cpp:380] pool4 -> pool4
+I1017 23:54:13.058655 29508 net.cpp:122] Setting up pool4
+I1017 23:54:13.058663 29508 net.cpp:129] Top shape: 150 512 14 14 (15052800)
+I1017 23:54:13.058668 29508 net.cpp:137] Memory required for data: 16889262600
+I1017 23:54:13.058672 29508 layer_factory.hpp:77] Creating layer conv5_1
+I1017 23:54:13.058682 29508 net.cpp:84] Creating Layer conv5_1
+I1017 23:54:13.058689 29508 net.cpp:406] conv5_1 <- pool4
+I1017 23:54:13.058697 29508 net.cpp:380] conv5_1 -> conv5_1
+I1017 23:54:13.065136 29508 net.cpp:122] Setting up conv5_1
+I1017 23:54:13.065155 29508 net.cpp:129] Top shape: 150 512 14 14 (15052800)
+I1017 23:54:13.065166 29508 net.cpp:137] Memory required for data: 16949473800
+I1017 23:54:13.065176 29508 layer_factory.hpp:77] Creating layer relu5_1
+I1017 23:54:13.065183 29508 net.cpp:84] Creating Layer relu5_1
+I1017 23:54:13.065189 29508 net.cpp:406] relu5_1 <- conv5_1
+I1017 23:54:13.065196 29508 net.cpp:367] relu5_1 -> conv5_1 (in-place)
+I1017 23:54:13.065206 29508 net.cpp:122] Setting up relu5_1
+I1017 23:54:13.065212 29508 net.cpp:129] Top shape: 150 512 14 14 (15052800)
+I1017 23:54:13.065217 29508 net.cpp:137] Memory required for data: 17009685000
+I1017 23:54:13.065220 29508 layer_factory.hpp:77] Creating layer conv5_2
+I1017 23:54:13.065229 29508 net.cpp:84] Creating Layer conv5_2
+I1017 23:54:13.065235 29508 net.cpp:406] conv5_2 <- conv5_1
+I1017 23:54:13.065244 29508 net.cpp:380] conv5_2 -> conv5_2
+I1017 23:54:13.071655 29508 net.cpp:122] Setting up conv5_2
+I1017 23:54:13.071674 29508 net.cpp:129] Top shape: 150 512 14 14 (15052800)
+I1017 23:54:13.071686 29508 net.cpp:137] Memory required for data: 17069896200
+I1017 23:54:13.071696 29508 layer_factory.hpp:77] Creating layer relu5_2
+I1017 23:54:13.071713 29508 net.cpp:84] Creating Layer relu5_2
+I1017 23:54:13.071723 29508 net.cpp:406] relu5_2 <- conv5_2
+I1017 23:54:13.071738 29508 net.cpp:367] relu5_2 -> conv5_2 (in-place)
+I1017 23:54:13.071748 29508 net.cpp:122] Setting up relu5_2
+I1017 23:54:13.071753 29508 net.cpp:129] Top shape: 150 512 14 14 (15052800)
+I1017 23:54:13.071758 29508 net.cpp:137] Memory required for data: 17130107400
+I1017 23:54:13.071763 29508 layer_factory.hpp:77] Creating layer conv5_3
+I1017 23:54:13.071774 29508 net.cpp:84] Creating Layer conv5_3
+I1017 23:54:13.071780 29508 net.cpp:406] conv5_3 <- conv5_2
+I1017 23:54:13.071787 29508 net.cpp:380] conv5_3 -> conv5_3
+I1017 23:54:13.078188 29508 net.cpp:122] Setting up conv5_3
+I1017 23:54:13.078209 29508 net.cpp:129] Top shape: 150 512 14 14 (15052800)
+I1017 23:54:13.078220 29508 net.cpp:137] Memory required for data: 17190318600
+I1017 23:54:13.078229 29508 layer_factory.hpp:77] Creating layer relu5_3
+I1017 23:54:13.078238 29508 net.cpp:84] Creating Layer relu5_3
+I1017 23:54:13.078243 29508 net.cpp:406] relu5_3 <- conv5_3
+I1017 23:54:13.078251 29508 net.cpp:367] relu5_3 -> conv5_3 (in-place)
+I1017 23:54:13.078260 29508 net.cpp:122] Setting up relu5_3
+I1017 23:54:13.078266 29508 net.cpp:129] Top shape: 150 512 14 14 (15052800)
+I1017 23:54:13.078271 29508 net.cpp:137] Memory required for data: 17250529800
+I1017 23:54:13.078275 29508 layer_factory.hpp:77] Creating layer conv5_3_re
+I1017 23:54:13.078285 29508 net.cpp:84] Creating Layer conv5_3_re
+I1017 23:54:13.078290 29508 net.cpp:406] conv5_3_re <- conv5_3
+I1017 23:54:13.078299 29508 net.cpp:380] conv5_3_re -> conv5_3_re
+I1017 23:54:13.078336 29508 net.cpp:122] Setting up conv5_3_re
+I1017 23:54:13.078346 29508 net.cpp:129] Top shape: 150 512 196 (15052800)
+I1017 23:54:13.078357 29508 net.cpp:137] Memory required for data: 17310741000
+I1017 23:54:13.078362 29508 layer_factory.hpp:77] Creating layer conv5_3_tran
+I1017 23:54:13.078433 29508 net.cpp:84] Creating Layer conv5_3_tran
+I1017 23:54:13.078443 29508 net.cpp:406] conv5_3_tran <- conv5_3_re
+I1017 23:54:13.078450 29508 net.cpp:380] conv5_3_tran -> conv5_3_tran
+I1017 23:54:13.113478 29508 net.cpp:122] Setting up conv5_3_tran
+I1017 23:54:13.113529 29508 net.cpp:129] Top shape: 8 150 512 (614400)
+I1017 23:54:13.113535 29508 net.cpp:137] Memory required for data: 17313198600
+I1017 23:54:13.113546 29508 layer_factory.hpp:77] Creating layer lstm1
+I1017 23:54:13.113569 29508 net.cpp:84] Creating Layer lstm1
+I1017 23:54:13.113582 29508 net.cpp:406] lstm1 <- conv5_3_tran
+I1017 23:54:13.113600 29508 net.cpp:406] lstm1 <- clip_markers
+I1017 23:54:13.113613 29508 net.cpp:380] lstm1 -> lstm1
+I1017 23:54:13.113641 29508 recurrent_layer.cpp:20] Initializing recurrent layer: assuming input batch contains 8 timesteps of 150 independent streams.
+I1017 23:54:13.114114 29508 net.cpp:51] Initializing net from parameters: 
+layer {
+  name: "lstm1_"
+  type: "Input"
+  top: "x"
+  top: "cont"
+  input_param {
+    shape {
+      dim: 8
+      dim: 150
+      dim: 512
+    }
+    shape {
+      dim: 8
+      dim: 150
+    }
+  }
+}
+layer {
+  name: "lstm1_"
+  type: "Input"
+  top: "c_0"
+  top: "h_0"
+  input_param {
+    shape {
+      dim: 1
+      dim: 150
+      dim: 512
+    }
+    shape {
+      dim: 1
+      dim: 150
+      dim: 512
+    }
+  }
+}
+layer {
+  name: "lstm1_cont_slice"
+  type: "Slice"
+  bottom: "cont"
+  top: "cont_1"
+  top: "cont_2"
+  top: "cont_3"
+  top: "cont_4"
+  top: "cont_5"
+  top: "cont_6"
+  top: "cont_7"
+  top: "cont_8"
+  slice_param {
+    axis: 0
+  }
+}
+layer {
+  name: "lstm1_x_transform"
+  type: "InnerProduct"
+  bottom: "x"
+  top: "W_xc_x"
+  param {
+    name: "W_xc"
+  }
+  param {
+    name: "b_c"
+  }
+  propagate_down: true
+  inner_product_param {
+    num_output: 2048
+    bias_term: true
+    weight_filler {
+      type: "uniform"
+      min: -0.01
+      max: 0.01
+    }
+    bias_filler {
+      type: "constant"
+      value: 0
+    }
+    axis: 2
+  }
+}
+layer {
+  name: "lstm1_W_xc_x_slice"
+  type: "Slice"
+  bottom: "W_xc_x"
+  top: "W_xc_x_1"
+  top: "W_xc_x_2"
+  top: "W_xc_x_3"
+  top: "W_xc_x_4"
+  top: "W_xc_x_5"
+  top: "W_xc_x_6"
+  top: "W_xc_x_7"
+  top: "W_xc_x_8"
+  slice_param {
+    axis: 0
+  }
+}
+layer {
+  name: "lstm1_h_conted_0"
+  type: "Scale"
+  bottom: "h_0"
+  bottom: "cont_1"
+  top: "h_conted_0"
+  scale_param {
+    axis: 0
+  }
+}
+layer {
+  name: "lstm1_transform_1"
+  type: "InnerProduct"
+  bottom: "h_conted_0"
+  top: "W_hc_h_0"
+  param {
+    name: "W_hc"
+  }
+  inner_product_param {
+    num_output: 2048
+    bias_term: false
+    weight_filler {
+      type: "uniform"
+      min: -0.01
+      max: 0.01
+    }
+    axis: 2
+  }
+}
+layer {
+  name: "lstm1_gate_input_1"
+  type: "Eltwise"
+  bottom: "W_hc_h_0"
+  bottom: "W_xc_x_1"
+  top: "gate_input_1"
+  eltwise_param {
+    operation: SUM
+  }
+}
+layer {
+  name: "lstm1_unit_1"
+  type: "LSTMUnit"
+  bottom: "c_0"
+  bottom: "gate_input_1"
+  bottom: "cont_1"
+  top: "c_1"
+  top: "h_1"
+}
+layer {
+  name: "lstm1_h_conted_1"
+  type: "Scale"
+  bottom: "h_1"
+  bottom: "cont_2"
+  top: "h_conted_1"
+  scale_param {
+    axis: 0
+  }
+}
+layer {
+  name: "lstm1_transform_2"
+  type: "InnerProduct"
+  bottom: "h_conted_1"
+  top: "W_hc_h_1"
+  param {
+    name: "W_hc"
+  }
+  inner_product_param {
+    num_output: 2048
+    bias_term: false
+    weight_filler {
+      type: "uniform"
+      min: -0.01
+      max: 0.01
+    }
+    axis: 2
+  }
+}
+layer {
+  name: "lstm1_gate_input_2"
+  type: "Eltwise"
+  bottom: "W_hc_h_1"
+  bottom: "W_xc_x_2"
+  top: "gate_input_2"
+  eltwise_param {
+    operation: SUM
+  }
+}
+layer {
+  name: "lstm1_unit_2"
+  type: "LSTMUnit"
+  bottom: "c_1"
+  bottom: "gate_input_2"
+  bottom: "cont_2"
+  top: "c_2"
+  top: "h_2"
+}
+layer {
+  name: "lstm1_h_conted_2"
+  type: "Scale"
+  bottom: "h_2"
+  bottom: "cont_3"
+  top: "h_conted_2"
+  scale_param {
+    axis: 0
+  }
+}
+layer {
+  name: "lstm1_transform_3"
+  type: "InnerProduct"
+  bottom: "h_conted_2"
+  top: "W_hc_h_2"
+  param {
+    name: "W_hc"
+  }
+  inner_product_param {
+    num_output: 2048
+    bias_term: false
+    weight_filler {
+      type: "uniform"
+      min: -0.01
+      max: 0.01
+    }
+    axis: 2
+  }
+}
+layer {
+  name: "lstm1_gate_input_3"
+  type: "Eltwise"
+  bottom: "W_hc_h_2"
+  bottom: "W_xc_x_3"
+  top: "gate_input_3"
+  eltwise_param {
+    operation: SUM
+  }
+}
+layer {
+  name: "lstm1_unit_3"
+  type: "LSTMUnit"
+  bottom: "c_2"
+  bottom: "gate_input_3"
+  bottom: "cont_3"
+  top: "c_3"
+  top: "h_3"
+}
+layer {
+  name: "lstm1_h_conted_3"
+  type: "Scale"
+  bottom: "h_3"
+  bottom: "cont_4"
+  top: "h_conted_3"
+  scale_param {
+    axis: 0
+  }
+}
+layer {
+  name: "lstm1_transform_4"
+  type: "InnerProduct"
+  bottom: "h_conted_3"
+  top: "W_hc_h_3"
+  param {
+    name: "W_hc"
+  }
+  inner_product_param {
+    num_output: 2048
+    bias_term: false
+    weight_filler {
+      type: "uniform"
+      min: -0.01
+      max: 0.01
+    }
+    axis: 2
+  }
+}
+layer {
+  name: "lstm1_gate_input_4"
+  type: "Eltwise"
+  bottom: "W_hc_h_3"
+  bottom: "W_xc_x_4"
+  top: "gate_input_4"
+  eltwise_param {
+    operation: SUM
+  }
+}
+layer {
+  name: "lstm1_unit_4"
+  type: "LSTMUnit"
+  bottom: "c_3"
+  bottom: "gate_input_4"
+  bottom: "cont_4"
+  top: "c_4"
+  top: "h_4"
+}
+layer {
+  name: "lstm1_h_conted_4"
+  type: "Scale"
+  bottom: "h_4"
+  bottom: "cont_5"
+  top: "h_conted_4"
+  scale_param {
+    axis: 0
+  }
+}
+layer {
+  name: "lstm1_transform_5"
+  type: "InnerProduct"
+  bottom: "h_conted_4"
+  top: "W_hc_h_4"
+  param {
+    name: "W_hc"
+  }
+  inner_product_param {
+    num_output: 2048
+    bias_term: false
+    weight_filler {
+      type: "uniform"
+      min: -0.01
+      max: 0.01
+    }
+    axis: 2
+  }
+}
+layer {
+  name: "lstm1_gate_input_5"
+  type: "Eltwise"
+  bottom: "W_hc_h_4"
+  bottom: "W_xc_x_5"
+  top: "gate_input_5"
+  eltwise_param {
+    operation: SUM
+  }
+}
+layer {
+  name: "lstm1_unit_5"
+  type: "LSTMUnit"
+  bottom: "c_4"
+  bottom: "gate_input_5"
+  bottom: "cont_5"
+  top: "c_5"
+  top: "h_5"
+}
+layer {
+  name: "lstm1_h_conted_5"
+  type: "Scale"
+  bottom: "h_5"
+  bottom: "cont_6"
+  top: "h_conted_5"
+  scale_param {
+    axis: 0
+  }
+}
+layer {
+  name: "lstm1_transform_6"
+  type: "InnerProduct"
+  bottom: "h_conted_5"
+  top: "W_hc_h_5"
+  param {
+    name: "W_hc"
+  }
+  inner_product_param {
+    num_output: 2048
+    bias_term: false
+    weight_filler {
+      type: "uniform"
+      min: -0.01
+      max: 0.01
+    }
+    axis: 2
+  }
+}
+layer {
+  name: "lstm1_gate_input_6"
+  type: "Eltwise"
+  bottom: "W_hc_h_5"
+  bottom: "W_xc_x_6"
+  top: "gate_input_6"
+  eltwise_param {
+    operation: SUM
+  }
+}
+layer {
+  name: "lstm1_unit_6"
+  type: "LSTMUnit"
+  bottom: "c_5"
+  bottom: "gate_input_6"
+  bottom: "cont_6"
+  top: "c_6"
+  top: "h_6"
+}
+layer {
+  name: "lstm1_h_conted_6"
+  type: "Scale"
+  bottom: "h_6"
+  bottom: "cont_7"
+  top: "h_conted_6"
+  scale_param {
+    axis: 0
+  }
+}
+layer {
+  name: "lstm1_transform_7"
+  type: "InnerProduct"
+  bottom: "h_conted_6"
+  top: "W_hc_h_6"
+  param {
+    name: "W_hc"
+  }
+  inner_product_param {
+    num_output: 2048
+    bias_term: false
+    weight_filler {
+      type: "uniform"
+      min: -0.01
+      max: 0.01
+    }
+    axis: 2
+  }
+}
+layer {
+  name: "lstm1_gate_input_7"
+  type: "Eltwise"
+  bottom: "W_hc_h_6"
+  bottom: "W_xc_x_7"
+  top: "gate_input_7"
+  eltwise_param {
+    operation: SUM
+  }
+}
+layer {
+  name: "lstm1_unit_7"
+  type: "LSTMUnit"
+  bottom: "c_6"
+  bottom: "gate_input_7"
+  bottom: "cont_7"
+  top: "c_7"
+  top: "h_7"
+}
+layer {
+  name: "lstm1_h_conted_7"
+  type: "Scale"
+  bottom: "h_7"
+  bottom: "cont_8"
+  top: "h_conted_7"
+  scale_param {
+    axis: 0
+  }
+}
+layer {
+  name: "lstm1_transform_8"
+  type: "InnerProduct"
+  bottom: "h_conted_7"
+  top: "W_hc_h_7"
+  param {
+    name: "W_hc"
+  }
+  inner_product_param {
+    num_output: 2048
+    bias_term: false
+    weight_filler {
+      type: "uniform"
+      min: -0.01
+      max: 0.01
+    }
+    axis: 2
+  }
+}
+layer {
+  name: "lstm1_gate_input_8"
+  type: "Eltwise"
+  bottom: "W_hc_h_7"
+  bottom: "W_xc_x_8"
+  top: "gate_input_8"
+  eltwise_param {
+    operation: SUM
+  }
+}
+layer {
+  name: "lstm1_unit_8"
+  type: "LSTMUnit"
+  bottom: "c_7"
+  bottom: "gate_input_8"
+  bottom: "cont_8"
+  top: "c_8"
+  top: "h_8"
+}
+layer {
+  name: "lstm1_"
+  type: "Split"
+  bottom: "c_8"
+  top: "c_T"
+}
+layer {
+  name: "lstm1_h_concat"
+  type: "Concat"
+  bottom: "h_1"
+  bottom: "h_2"
+  bottom: "h_3"
+  bottom: "h_4"
+  bottom: "h_5"
+  bottom: "h_6"
+  bottom: "h_7"
+  bottom: "h_8"
+  top: "h"
+  concat_param {
+    axis: 0
+  }
+}
+layer {
+  name: "h_pseudoloss"
+  type: "Reduction"
+  bottom: "h"
+  top: "h_pseudoloss"
+  loss_weight: 1
+}
+I1017 23:54:13.114439 29508 layer_factory.hpp:77] Creating layer lstm1_
+I1017 23:54:13.114454 29508 net.cpp:84] Creating Layer lstm1_
+I1017 23:54:13.114460 29508 net.cpp:380] lstm1_ -> x
+I1017 23:54:13.114472 29508 net.cpp:380] lstm1_ -> cont
+I1017 23:54:13.114529 29508 net.cpp:122] Setting up lstm1_
+I1017 23:54:13.114542 29508 net.cpp:129] Top shape: 8 150 512 (614400)
+I1017 23:54:13.114548 29508 net.cpp:129] Top shape: 8 150 (1200)
+I1017 23:54:13.114553 29508 net.cpp:137] Memory required for data: 2462400
+I1017 23:54:13.114558 29508 layer_factory.hpp:77] Creating layer lstm1_
+I1017 23:54:13.114567 29508 net.cpp:84] Creating Layer lstm1_
+I1017 23:54:13.114573 29508 net.cpp:380] lstm1_ -> c_0
+I1017 23:54:13.114583 29508 net.cpp:380] lstm1_ -> h_0
+I1017 23:54:13.114639 29508 net.cpp:122] Setting up lstm1_
+I1017 23:54:13.114650 29508 net.cpp:129] Top shape: 1 150 512 (76800)
+I1017 23:54:13.114655 29508 net.cpp:129] Top shape: 1 150 512 (76800)
+I1017 23:54:13.114660 29508 net.cpp:137] Memory required for data: 3076800
+I1017 23:54:13.114665 29508 layer_factory.hpp:77] Creating layer lstm1_cont_slice
+I1017 23:54:13.114673 29508 net.cpp:84] Creating Layer lstm1_cont_slice
+I1017 23:54:13.114679 29508 net.cpp:406] lstm1_cont_slice <- cont
+I1017 23:54:13.114687 29508 net.cpp:380] lstm1_cont_slice -> cont_1
+I1017 23:54:13.114696 29508 net.cpp:380] lstm1_cont_slice -> cont_2
+I1017 23:54:13.114706 29508 net.cpp:380] lstm1_cont_slice -> cont_3
+I1017 23:54:13.114712 29508 net.cpp:380] lstm1_cont_slice -> cont_4
+I1017 23:54:13.114719 29508 net.cpp:380] lstm1_cont_slice -> cont_5
+I1017 23:54:13.114727 29508 net.cpp:380] lstm1_cont_slice -> cont_6
+I1017 23:54:13.114735 29508 net.cpp:380] lstm1_cont_slice -> cont_7
+I1017 23:54:13.114745 29508 net.cpp:380] lstm1_cont_slice -> cont_8
+I1017 23:54:13.114886 29508 net.cpp:122] Setting up lstm1_cont_slice
+I1017 23:54:13.114897 29508 net.cpp:129] Top shape: 1 150 (150)
+I1017 23:54:13.114902 29508 net.cpp:129] Top shape: 1 150 (150)
+I1017 23:54:13.114908 29508 net.cpp:129] Top shape: 1 150 (150)
+I1017 23:54:13.114913 29508 net.cpp:129] Top shape: 1 150 (150)
+I1017 23:54:13.114918 29508 net.cpp:129] Top shape: 1 150 (150)
+I1017 23:54:13.114924 29508 net.cpp:129] Top shape: 1 150 (150)
+I1017 23:54:13.114929 29508 net.cpp:129] Top shape: 1 150 (150)
+I1017 23:54:13.114934 29508 net.cpp:129] Top shape: 1 150 (150)
+I1017 23:54:13.114939 29508 net.cpp:137] Memory required for data: 3081600
+I1017 23:54:13.114943 29508 layer_factory.hpp:77] Creating layer cont_1_lstm1_cont_slice_0_split
+I1017 23:54:13.114951 29508 net.cpp:84] Creating Layer cont_1_lstm1_cont_slice_0_split
+I1017 23:54:13.114956 29508 net.cpp:406] cont_1_lstm1_cont_slice_0_split <- cont_1
+I1017 23:54:13.114964 29508 net.cpp:380] cont_1_lstm1_cont_slice_0_split -> cont_1_lstm1_cont_slice_0_split_0
+I1017 23:54:13.114971 29508 net.cpp:380] cont_1_lstm1_cont_slice_0_split -> cont_1_lstm1_cont_slice_0_split_1
+I1017 23:54:13.115012 29508 net.cpp:122] Setting up cont_1_lstm1_cont_slice_0_split
+I1017 23:54:13.115021 29508 net.cpp:129] Top shape: 1 150 (150)
+I1017 23:54:13.115027 29508 net.cpp:129] Top shape: 1 150 (150)
+I1017 23:54:13.115031 29508 net.cpp:137] Memory required for data: 3082800
+I1017 23:54:13.115036 29508 layer_factory.hpp:77] Creating layer cont_2_lstm1_cont_slice_1_split
+I1017 23:54:13.115043 29508 net.cpp:84] Creating Layer cont_2_lstm1_cont_slice_1_split
+I1017 23:54:13.115048 29508 net.cpp:406] cont_2_lstm1_cont_slice_1_split <- cont_2
+I1017 23:54:13.115056 29508 net.cpp:380] cont_2_lstm1_cont_slice_1_split -> cont_2_lstm1_cont_slice_1_split_0
+I1017 23:54:13.115064 29508 net.cpp:380] cont_2_lstm1_cont_slice_1_split -> cont_2_lstm1_cont_slice_1_split_1
+I1017 23:54:13.115103 29508 net.cpp:122] Setting up cont_2_lstm1_cont_slice_1_split
+I1017 23:54:13.115113 29508 net.cpp:129] Top shape: 1 150 (150)
+I1017 23:54:13.115118 29508 net.cpp:129] Top shape: 1 150 (150)
+I1017 23:54:13.115123 29508 net.cpp:137] Memory required for data: 3084000
+I1017 23:54:13.115126 29508 layer_factory.hpp:77] Creating layer cont_3_lstm1_cont_slice_2_split
+I1017 23:54:13.115133 29508 net.cpp:84] Creating Layer cont_3_lstm1_cont_slice_2_split
+I1017 23:54:13.115137 29508 net.cpp:406] cont_3_lstm1_cont_slice_2_split <- cont_3
+I1017 23:54:13.115144 29508 net.cpp:380] cont_3_lstm1_cont_slice_2_split -> cont_3_lstm1_cont_slice_2_split_0
+I1017 23:54:13.115152 29508 net.cpp:380] cont_3_lstm1_cont_slice_2_split -> cont_3_lstm1_cont_slice_2_split_1
+I1017 23:54:13.115190 29508 net.cpp:122] Setting up cont_3_lstm1_cont_slice_2_split
+I1017 23:54:13.115200 29508 net.cpp:129] Top shape: 1 150 (150)
+I1017 23:54:13.115205 29508 net.cpp:129] Top shape: 1 150 (150)
+I1017 23:54:13.115209 29508 net.cpp:137] Memory required for data: 3085200
+I1017 23:54:13.115213 29508 layer_factory.hpp:77] Creating layer cont_4_lstm1_cont_slice_3_split
+I1017 23:54:13.115219 29508 net.cpp:84] Creating Layer cont_4_lstm1_cont_slice_3_split
+I1017 23:54:13.115224 29508 net.cpp:406] cont_4_lstm1_cont_slice_3_split <- cont_4
+I1017 23:54:13.115231 29508 net.cpp:380] cont_4_lstm1_cont_slice_3_split -> cont_4_lstm1_cont_slice_3_split_0
+I1017 23:54:13.115238 29508 net.cpp:380] cont_4_lstm1_cont_slice_3_split -> cont_4_lstm1_cont_slice_3_split_1
+I1017 23:54:13.115278 29508 net.cpp:122] Setting up cont_4_lstm1_cont_slice_3_split
+I1017 23:54:13.115285 29508 net.cpp:129] Top shape: 1 150 (150)
+I1017 23:54:13.115291 29508 net.cpp:129] Top shape: 1 150 (150)
+I1017 23:54:13.115295 29508 net.cpp:137] Memory required for data: 3086400
+I1017 23:54:13.115299 29508 layer_factory.hpp:77] Creating layer cont_5_lstm1_cont_slice_4_split
+I1017 23:54:13.115305 29508 net.cpp:84] Creating Layer cont_5_lstm1_cont_slice_4_split
+I1017 23:54:13.115310 29508 net.cpp:406] cont_5_lstm1_cont_slice_4_split <- cont_5
+I1017 23:54:13.115319 29508 net.cpp:380] cont_5_lstm1_cont_slice_4_split -> cont_5_lstm1_cont_slice_4_split_0
+I1017 23:54:13.115326 29508 net.cpp:380] cont_5_lstm1_cont_slice_4_split -> cont_5_lstm1_cont_slice_4_split_1
+I1017 23:54:13.115362 29508 net.cpp:122] Setting up cont_5_lstm1_cont_slice_4_split
+I1017 23:54:13.115370 29508 net.cpp:129] Top shape: 1 150 (150)
+I1017 23:54:13.115375 29508 net.cpp:129] Top shape: 1 150 (150)
+I1017 23:54:13.115380 29508 net.cpp:137] Memory required for data: 3087600
+I1017 23:54:13.115383 29508 layer_factory.hpp:77] Creating layer cont_6_lstm1_cont_slice_5_split
+I1017 23:54:13.115392 29508 net.cpp:84] Creating Layer cont_6_lstm1_cont_slice_5_split
+I1017 23:54:13.115397 29508 net.cpp:406] cont_6_lstm1_cont_slice_5_split <- cont_6
+I1017 23:54:13.115403 29508 net.cpp:380] cont_6_lstm1_cont_slice_5_split -> cont_6_lstm1_cont_slice_5_split_0
+I1017 23:54:13.115411 29508 net.cpp:380] cont_6_lstm1_cont_slice_5_split -> cont_6_lstm1_cont_slice_5_split_1
+I1017 23:54:13.115447 29508 net.cpp:122] Setting up cont_6_lstm1_cont_slice_5_split
+I1017 23:54:13.115453 29508 net.cpp:129] Top shape: 1 150 (150)
+I1017 23:54:13.115459 29508 net.cpp:129] Top shape: 1 150 (150)
+I1017 23:54:13.115463 29508 net.cpp:137] Memory required for data: 3088800
+I1017 23:54:13.115468 29508 layer_factory.hpp:77] Creating layer cont_7_lstm1_cont_slice_6_split
+I1017 23:54:13.115473 29508 net.cpp:84] Creating Layer cont_7_lstm1_cont_slice_6_split
+I1017 23:54:13.115478 29508 net.cpp:406] cont_7_lstm1_cont_slice_6_split <- cont_7
+I1017 23:54:13.115484 29508 net.cpp:380] cont_7_lstm1_cont_slice_6_split -> cont_7_lstm1_cont_slice_6_split_0
+I1017 23:54:13.115491 29508 net.cpp:380] cont_7_lstm1_cont_slice_6_split -> cont_7_lstm1_cont_slice_6_split_1
+I1017 23:54:13.115527 29508 net.cpp:122] Setting up cont_7_lstm1_cont_slice_6_split
+I1017 23:54:13.115535 29508 net.cpp:129] Top shape: 1 150 (150)
+I1017 23:54:13.115540 29508 net.cpp:129] Top shape: 1 150 (150)
+I1017 23:54:13.115543 29508 net.cpp:137] Memory required for data: 3090000
+I1017 23:54:13.115548 29508 layer_factory.hpp:77] Creating layer cont_8_lstm1_cont_slice_7_split
+I1017 23:54:13.115553 29508 net.cpp:84] Creating Layer cont_8_lstm1_cont_slice_7_split
+I1017 23:54:13.115558 29508 net.cpp:406] cont_8_lstm1_cont_slice_7_split <- cont_8
+I1017 23:54:13.115566 29508 net.cpp:380] cont_8_lstm1_cont_slice_7_split -> cont_8_lstm1_cont_slice_7_split_0
+I1017 23:54:13.115574 29508 net.cpp:380] cont_8_lstm1_cont_slice_7_split -> cont_8_lstm1_cont_slice_7_split_1
+I1017 23:54:13.115607 29508 net.cpp:122] Setting up cont_8_lstm1_cont_slice_7_split
+I1017 23:54:13.115614 29508 net.cpp:129] Top shape: 1 150 (150)
+I1017 23:54:13.115619 29508 net.cpp:129] Top shape: 1 150 (150)
+I1017 23:54:13.115623 29508 net.cpp:137] Memory required for data: 3091200
+I1017 23:54:13.115628 29508 layer_factory.hpp:77] Creating layer lstm1_x_transform
+I1017 23:54:13.115638 29508 net.cpp:84] Creating Layer lstm1_x_transform
+I1017 23:54:13.115643 29508 net.cpp:406] lstm1_x_transform <- x
+I1017 23:54:13.115650 29508 net.cpp:380] lstm1_x_transform -> W_xc_x
+I1017 23:54:13.129077 29508 net.cpp:122] Setting up lstm1_x_transform
+I1017 23:54:13.129094 29508 net.cpp:129] Top shape: 8 150 2048 (2457600)
+I1017 23:54:13.129101 29508 net.cpp:137] Memory required for data: 12921600
+I1017 23:54:13.129115 29508 layer_factory.hpp:77] Creating layer lstm1_W_xc_x_slice
+I1017 23:54:13.129153 29508 net.cpp:84] Creating Layer lstm1_W_xc_x_slice
+I1017 23:54:13.129163 29508 net.cpp:406] lstm1_W_xc_x_slice <- W_xc_x
+I1017 23:54:13.129171 29508 net.cpp:380] lstm1_W_xc_x_slice -> W_xc_x_1
+I1017 23:54:13.129181 29508 net.cpp:380] lstm1_W_xc_x_slice -> W_xc_x_2
+I1017 23:54:13.129194 29508 net.cpp:380] lstm1_W_xc_x_slice -> W_xc_x_3
+I1017 23:54:13.129201 29508 net.cpp:380] lstm1_W_xc_x_slice -> W_xc_x_4
+I1017 23:54:13.129217 29508 net.cpp:380] lstm1_W_xc_x_slice -> W_xc_x_5
+I1017 23:54:13.129230 29508 net.cpp:380] lstm1_W_xc_x_slice -> W_xc_x_6
+I1017 23:54:13.129237 29508 net.cpp:380] lstm1_W_xc_x_slice -> W_xc_x_7
+I1017 23:54:13.129246 29508 net.cpp:380] lstm1_W_xc_x_slice -> W_xc_x_8
+I1017 23:54:13.129374 29508 net.cpp:122] Setting up lstm1_W_xc_x_slice
+I1017 23:54:13.129384 29508 net.cpp:129] Top shape: 1 150 2048 (307200)
+I1017 23:54:13.129390 29508 net.cpp:129] Top shape: 1 150 2048 (307200)
+I1017 23:54:13.129396 29508 net.cpp:129] Top shape: 1 150 2048 (307200)
+I1017 23:54:13.129401 29508 net.cpp:129] Top shape: 1 150 2048 (307200)
+I1017 23:54:13.129407 29508 net.cpp:129] Top shape: 1 150 2048 (307200)
+I1017 23:54:13.129412 29508 net.cpp:129] Top shape: 1 150 2048 (307200)
+I1017 23:54:13.129418 29508 net.cpp:129] Top shape: 1 150 2048 (307200)
+I1017 23:54:13.129423 29508 net.cpp:129] Top shape: 1 150 2048 (307200)
+I1017 23:54:13.129427 29508 net.cpp:137] Memory required for data: 22752000
+I1017 23:54:13.129432 29508 layer_factory.hpp:77] Creating layer lstm1_h_conted_0
+I1017 23:54:13.129441 29508 net.cpp:84] Creating Layer lstm1_h_conted_0
+I1017 23:54:13.129446 29508 net.cpp:406] lstm1_h_conted_0 <- h_0
+I1017 23:54:13.129452 29508 net.cpp:406] lstm1_h_conted_0 <- cont_1_lstm1_cont_slice_0_split_0
+I1017 23:54:13.129459 29508 net.cpp:380] lstm1_h_conted_0 -> h_conted_0
+I1017 23:54:13.129540 29508 net.cpp:122] Setting up lstm1_h_conted_0
+I1017 23:54:13.129549 29508 net.cpp:129] Top shape: 1 150 512 (76800)
+I1017 23:54:13.129554 29508 net.cpp:137] Memory required for data: 23059200
+I1017 23:54:13.129557 29508 layer_factory.hpp:77] Creating layer lstm1_transform_1
+I1017 23:54:13.129565 29508 net.cpp:84] Creating Layer lstm1_transform_1
+I1017 23:54:13.129570 29508 net.cpp:406] lstm1_transform_1 <- h_conted_0
+I1017 23:54:13.129580 29508 net.cpp:380] lstm1_transform_1 -> W_hc_h_0
+I1017 23:54:13.142763 29508 net.cpp:122] Setting up lstm1_transform_1
+I1017 23:54:13.142779 29508 net.cpp:129] Top shape: 1 150 2048 (307200)
+I1017 23:54:13.142786 29508 net.cpp:137] Memory required for data: 24288000
+I1017 23:54:13.142794 29508 layer_factory.hpp:77] Creating layer lstm1_gate_input_1
+I1017 23:54:13.142803 29508 net.cpp:84] Creating Layer lstm1_gate_input_1
+I1017 23:54:13.142809 29508 net.cpp:406] lstm1_gate_input_1 <- W_hc_h_0
+I1017 23:54:13.142815 29508 net.cpp:406] lstm1_gate_input_1 <- W_xc_x_1
+I1017 23:54:13.142822 29508 net.cpp:380] lstm1_gate_input_1 -> gate_input_1
+I1017 23:54:13.142856 29508 net.cpp:122] Setting up lstm1_gate_input_1
+I1017 23:54:13.142865 29508 net.cpp:129] Top shape: 1 150 2048 (307200)
+I1017 23:54:13.142870 29508 net.cpp:137] Memory required for data: 25516800
+I1017 23:54:13.142875 29508 layer_factory.hpp:77] Creating layer lstm1_unit_1
+I1017 23:54:13.142885 29508 net.cpp:84] Creating Layer lstm1_unit_1
+I1017 23:54:13.142890 29508 net.cpp:406] lstm1_unit_1 <- c_0
+I1017 23:54:13.142897 29508 net.cpp:406] lstm1_unit_1 <- gate_input_1
+I1017 23:54:13.142946 29508 net.cpp:406] lstm1_unit_1 <- cont_1_lstm1_cont_slice_0_split_1
+I1017 23:54:13.142974 29508 net.cpp:380] lstm1_unit_1 -> c_1
+I1017 23:54:13.142983 29508 net.cpp:380] lstm1_unit_1 -> h_1
+I1017 23:54:13.143054 29508 net.cpp:122] Setting up lstm1_unit_1
+I1017 23:54:13.143064 29508 net.cpp:129] Top shape: 1 150 512 (76800)
+I1017 23:54:13.143069 29508 net.cpp:129] Top shape: 1 150 512 (76800)
+I1017 23:54:13.143074 29508 net.cpp:137] Memory required for data: 26131200
+I1017 23:54:13.143079 29508 layer_factory.hpp:77] Creating layer h_1_lstm1_unit_1_1_split
+I1017 23:54:13.143085 29508 net.cpp:84] Creating Layer h_1_lstm1_unit_1_1_split
+I1017 23:54:13.143090 29508 net.cpp:406] h_1_lstm1_unit_1_1_split <- h_1
+I1017 23:54:13.143097 29508 net.cpp:380] h_1_lstm1_unit_1_1_split -> h_1_lstm1_unit_1_1_split_0
+I1017 23:54:13.143105 29508 net.cpp:380] h_1_lstm1_unit_1_1_split -> h_1_lstm1_unit_1_1_split_1
+I1017 23:54:13.143143 29508 net.cpp:122] Setting up h_1_lstm1_unit_1_1_split
+I1017 23:54:13.143154 29508 net.cpp:129] Top shape: 1 150 512 (76800)
+I1017 23:54:13.143160 29508 net.cpp:129] Top shape: 1 150 512 (76800)
+I1017 23:54:13.143165 29508 net.cpp:137] Memory required for data: 26745600
+I1017 23:54:13.143169 29508 layer_factory.hpp:77] Creating layer lstm1_h_conted_1
+I1017 23:54:13.143177 29508 net.cpp:84] Creating Layer lstm1_h_conted_1
+I1017 23:54:13.143182 29508 net.cpp:406] lstm1_h_conted_1 <- h_1_lstm1_unit_1_1_split_0
+I1017 23:54:13.143187 29508 net.cpp:406] lstm1_h_conted_1 <- cont_2_lstm1_cont_slice_1_split_0
+I1017 23:54:13.143194 29508 net.cpp:380] lstm1_h_conted_1 -> h_conted_1
+I1017 23:54:13.143262 29508 net.cpp:122] Setting up lstm1_h_conted_1
+I1017 23:54:13.143271 29508 net.cpp:129] Top shape: 1 150 512 (76800)
+I1017 23:54:13.143276 29508 net.cpp:137] Memory required for data: 27052800
+I1017 23:54:13.143281 29508 layer_factory.hpp:77] Creating layer lstm1_transform_2
+I1017 23:54:13.143290 29508 net.cpp:84] Creating Layer lstm1_transform_2
+I1017 23:54:13.143295 29508 net.cpp:406] lstm1_transform_2 <- h_conted_1
+I1017 23:54:13.143303 29508 net.cpp:380] lstm1_transform_2 -> W_hc_h_1
+I1017 23:54:13.157291 29508 net.cpp:122] Setting up lstm1_transform_2
+I1017 23:54:13.157312 29508 net.cpp:129] Top shape: 1 150 2048 (307200)
+I1017 23:54:13.157318 29508 net.cpp:137] Memory required for data: 28281600
+I1017 23:54:13.157325 29508 net.cpp:465] Sharing parameters 'W_hc' owned by layer 'lstm1_transform_1', param index 0
+I1017 23:54:13.157331 29508 layer_factory.hpp:77] Creating layer lstm1_gate_input_2
+I1017 23:54:13.157340 29508 net.cpp:84] Creating Layer lstm1_gate_input_2
+I1017 23:54:13.157346 29508 net.cpp:406] lstm1_gate_input_2 <- W_hc_h_1
+I1017 23:54:13.157352 29508 net.cpp:406] lstm1_gate_input_2 <- W_xc_x_2
+I1017 23:54:13.157361 29508 net.cpp:380] lstm1_gate_input_2 -> gate_input_2
+I1017 23:54:13.157398 29508 net.cpp:122] Setting up lstm1_gate_input_2
+I1017 23:54:13.157408 29508 net.cpp:129] Top shape: 1 150 2048 (307200)
+I1017 23:54:13.157413 29508 net.cpp:137] Memory required for data: 29510400
+I1017 23:54:13.157418 29508 layer_factory.hpp:77] Creating layer lstm1_unit_2
+I1017 23:54:13.157428 29508 net.cpp:84] Creating Layer lstm1_unit_2
+I1017 23:54:13.157433 29508 net.cpp:406] lstm1_unit_2 <- c_1
+I1017 23:54:13.157440 29508 net.cpp:406] lstm1_unit_2 <- gate_input_2
+I1017 23:54:13.157446 29508 net.cpp:406] lstm1_unit_2 <- cont_2_lstm1_cont_slice_1_split_1
+I1017 23:54:13.157454 29508 net.cpp:380] lstm1_unit_2 -> c_2
+I1017 23:54:13.157462 29508 net.cpp:380] lstm1_unit_2 -> h_2
+I1017 23:54:13.157518 29508 net.cpp:122] Setting up lstm1_unit_2
+I1017 23:54:13.157528 29508 net.cpp:129] Top shape: 1 150 512 (76800)
+I1017 23:54:13.157534 29508 net.cpp:129] Top shape: 1 150 512 (76800)
+I1017 23:54:13.157539 29508 net.cpp:137] Memory required for data: 30124800
+I1017 23:54:13.157544 29508 layer_factory.hpp:77] Creating layer h_2_lstm1_unit_2_1_split
+I1017 23:54:13.157552 29508 net.cpp:84] Creating Layer h_2_lstm1_unit_2_1_split
+I1017 23:54:13.157557 29508 net.cpp:406] h_2_lstm1_unit_2_1_split <- h_2
+I1017 23:54:13.157564 29508 net.cpp:380] h_2_lstm1_unit_2_1_split -> h_2_lstm1_unit_2_1_split_0
+I1017 23:54:13.157573 29508 net.cpp:380] h_2_lstm1_unit_2_1_split -> h_2_lstm1_unit_2_1_split_1
+I1017 23:54:13.157613 29508 net.cpp:122] Setting up h_2_lstm1_unit_2_1_split
+I1017 23:54:13.157622 29508 net.cpp:129] Top shape: 1 150 512 (76800)
+I1017 23:54:13.157629 29508 net.cpp:129] Top shape: 1 150 512 (76800)
+I1017 23:54:13.157634 29508 net.cpp:137] Memory required for data: 30739200
+I1017 23:54:13.157639 29508 layer_factory.hpp:77] Creating layer lstm1_h_conted_2
+I1017 23:54:13.157647 29508 net.cpp:84] Creating Layer lstm1_h_conted_2
+I1017 23:54:13.157652 29508 net.cpp:406] lstm1_h_conted_2 <- h_2_lstm1_unit_2_1_split_0
+I1017 23:54:13.157660 29508 net.cpp:406] lstm1_h_conted_2 <- cont_3_lstm1_cont_slice_2_split_0
+I1017 23:54:13.157666 29508 net.cpp:380] lstm1_h_conted_2 -> h_conted_2
+I1017 23:54:13.157735 29508 net.cpp:122] Setting up lstm1_h_conted_2
+I1017 23:54:13.157744 29508 net.cpp:129] Top shape: 1 150 512 (76800)
+I1017 23:54:13.157749 29508 net.cpp:137] Memory required for data: 31046400
+I1017 23:54:13.157754 29508 layer_factory.hpp:77] Creating layer lstm1_transform_3
+I1017 23:54:13.157763 29508 net.cpp:84] Creating Layer lstm1_transform_3
+I1017 23:54:13.157768 29508 net.cpp:406] lstm1_transform_3 <- h_conted_2
+I1017 23:54:13.157776 29508 net.cpp:380] lstm1_transform_3 -> W_hc_h_2
+I1017 23:54:13.171361 29508 net.cpp:122] Setting up lstm1_transform_3
+I1017 23:54:13.171380 29508 net.cpp:129] Top shape: 1 150 2048 (307200)
+I1017 23:54:13.171392 29508 net.cpp:137] Memory required for data: 32275200
+I1017 23:54:13.171401 29508 net.cpp:465] Sharing parameters 'W_hc' owned by layer 'lstm1_transform_1', param index 0
+I1017 23:54:13.171409 29508 layer_factory.hpp:77] Creating layer lstm1_gate_input_3
+I1017 23:54:13.171417 29508 net.cpp:84] Creating Layer lstm1_gate_input_3
+I1017 23:54:13.171423 29508 net.cpp:406] lstm1_gate_input_3 <- W_hc_h_2
+I1017 23:54:13.171430 29508 net.cpp:406] lstm1_gate_input_3 <- W_xc_x_3
+I1017 23:54:13.171437 29508 net.cpp:380] lstm1_gate_input_3 -> gate_input_3
+I1017 23:54:13.171474 29508 net.cpp:122] Setting up lstm1_gate_input_3
+I1017 23:54:13.171484 29508 net.cpp:129] Top shape: 1 150 2048 (307200)
+I1017 23:54:13.171489 29508 net.cpp:137] Memory required for data: 33504000
+I1017 23:54:13.171494 29508 layer_factory.hpp:77] Creating layer lstm1_unit_3
+I1017 23:54:13.171501 29508 net.cpp:84] Creating Layer lstm1_unit_3
+I1017 23:54:13.171506 29508 net.cpp:406] lstm1_unit_3 <- c_2
+I1017 23:54:13.171512 29508 net.cpp:406] lstm1_unit_3 <- gate_input_3
+I1017 23:54:13.171519 29508 net.cpp:406] lstm1_unit_3 <- cont_3_lstm1_cont_slice_2_split_1
+I1017 23:54:13.171525 29508 net.cpp:380] lstm1_unit_3 -> c_3
+I1017 23:54:13.171533 29508 net.cpp:380] lstm1_unit_3 -> h_3
+I1017 23:54:13.171588 29508 net.cpp:122] Setting up lstm1_unit_3
+I1017 23:54:13.171597 29508 net.cpp:129] Top shape: 1 150 512 (76800)
+I1017 23:54:13.171603 29508 net.cpp:129] Top shape: 1 150 512 (76800)
+I1017 23:54:13.171607 29508 net.cpp:137] Memory required for data: 34118400
+I1017 23:54:13.171612 29508 layer_factory.hpp:77] Creating layer h_3_lstm1_unit_3_1_split
+I1017 23:54:13.171620 29508 net.cpp:84] Creating Layer h_3_lstm1_unit_3_1_split
+I1017 23:54:13.171627 29508 net.cpp:406] h_3_lstm1_unit_3_1_split <- h_3
+I1017 23:54:13.171633 29508 net.cpp:380] h_3_lstm1_unit_3_1_split -> h_3_lstm1_unit_3_1_split_0
+I1017 23:54:13.171640 29508 net.cpp:380] h_3_lstm1_unit_3_1_split -> h_3_lstm1_unit_3_1_split_1
+I1017 23:54:13.171679 29508 net.cpp:122] Setting up h_3_lstm1_unit_3_1_split
+I1017 23:54:13.171689 29508 net.cpp:129] Top shape: 1 150 512 (76800)
+I1017 23:54:13.171694 29508 net.cpp:129] Top shape: 1 150 512 (76800)
+I1017 23:54:13.171699 29508 net.cpp:137] Memory required for data: 34732800
+I1017 23:54:13.171703 29508 layer_factory.hpp:77] Creating layer lstm1_h_conted_3
+I1017 23:54:13.171713 29508 net.cpp:84] Creating Layer lstm1_h_conted_3
+I1017 23:54:13.171718 29508 net.cpp:406] lstm1_h_conted_3 <- h_3_lstm1_unit_3_1_split_0
+I1017 23:54:13.171725 29508 net.cpp:406] lstm1_h_conted_3 <- cont_4_lstm1_cont_slice_3_split_0
+I1017 23:54:13.171731 29508 net.cpp:380] lstm1_h_conted_3 -> h_conted_3
+I1017 23:54:13.171797 29508 net.cpp:122] Setting up lstm1_h_conted_3
+I1017 23:54:13.171807 29508 net.cpp:129] Top shape: 1 150 512 (76800)
+I1017 23:54:13.171811 29508 net.cpp:137] Memory required for data: 35040000
+I1017 23:54:13.171815 29508 layer_factory.hpp:77] Creating layer lstm1_transform_4
+I1017 23:54:13.171826 29508 net.cpp:84] Creating Layer lstm1_transform_4
+I1017 23:54:13.171831 29508 net.cpp:406] lstm1_transform_4 <- h_conted_3
+I1017 23:54:13.171838 29508 net.cpp:380] lstm1_transform_4 -> W_hc_h_3
+I1017 23:54:13.185290 29508 net.cpp:122] Setting up lstm1_transform_4
+I1017 23:54:13.185310 29508 net.cpp:129] Top shape: 1 150 2048 (307200)
+I1017 23:54:13.185320 29508 net.cpp:137] Memory required for data: 36268800
+I1017 23:54:13.185326 29508 net.cpp:465] Sharing parameters 'W_hc' owned by layer 'lstm1_transform_1', param index 0
+I1017 23:54:13.185333 29508 layer_factory.hpp:77] Creating layer lstm1_gate_input_4
+I1017 23:54:13.185341 29508 net.cpp:84] Creating Layer lstm1_gate_input_4
+I1017 23:54:13.185346 29508 net.cpp:406] lstm1_gate_input_4 <- W_hc_h_3
+I1017 23:54:13.185353 29508 net.cpp:406] lstm1_gate_input_4 <- W_xc_x_4
+I1017 23:54:13.185360 29508 net.cpp:380] lstm1_gate_input_4 -> gate_input_4
+I1017 23:54:13.185392 29508 net.cpp:122] Setting up lstm1_gate_input_4
+I1017 23:54:13.185402 29508 net.cpp:129] Top shape: 1 150 2048 (307200)
+I1017 23:54:13.185407 29508 net.cpp:137] Memory required for data: 37497600
+I1017 23:54:13.185412 29508 layer_factory.hpp:77] Creating layer lstm1_unit_4
+I1017 23:54:13.185423 29508 net.cpp:84] Creating Layer lstm1_unit_4
+I1017 23:54:13.185428 29508 net.cpp:406] lstm1_unit_4 <- c_3
+I1017 23:54:13.185434 29508 net.cpp:406] lstm1_unit_4 <- gate_input_4
+I1017 23:54:13.185441 29508 net.cpp:406] lstm1_unit_4 <- cont_4_lstm1_cont_slice_3_split_1
+I1017 23:54:13.185447 29508 net.cpp:380] lstm1_unit_4 -> c_4
+I1017 23:54:13.185456 29508 net.cpp:380] lstm1_unit_4 -> h_4
+I1017 23:54:13.185508 29508 net.cpp:122] Setting up lstm1_unit_4
+I1017 23:54:13.185518 29508 net.cpp:129] Top shape: 1 150 512 (76800)
+I1017 23:54:13.185523 29508 net.cpp:129] Top shape: 1 150 512 (76800)
+I1017 23:54:13.185528 29508 net.cpp:137] Memory required for data: 38112000
+I1017 23:54:13.185533 29508 layer_factory.hpp:77] Creating layer h_4_lstm1_unit_4_1_split
+I1017 23:54:13.185545 29508 net.cpp:84] Creating Layer h_4_lstm1_unit_4_1_split
+I1017 23:54:13.185556 29508 net.cpp:406] h_4_lstm1_unit_4_1_split <- h_4
+I1017 23:54:13.185564 29508 net.cpp:380] h_4_lstm1_unit_4_1_split -> h_4_lstm1_unit_4_1_split_0
+I1017 23:54:13.185571 29508 net.cpp:380] h_4_lstm1_unit_4_1_split -> h_4_lstm1_unit_4_1_split_1
+I1017 23:54:13.185621 29508 net.cpp:122] Setting up h_4_lstm1_unit_4_1_split
+I1017 23:54:13.185629 29508 net.cpp:129] Top shape: 1 150 512 (76800)
+I1017 23:54:13.185636 29508 net.cpp:129] Top shape: 1 150 512 (76800)
+I1017 23:54:13.185639 29508 net.cpp:137] Memory required for data: 38726400
+I1017 23:54:13.185644 29508 layer_factory.hpp:77] Creating layer lstm1_h_conted_4
+I1017 23:54:13.185652 29508 net.cpp:84] Creating Layer lstm1_h_conted_4
+I1017 23:54:13.185658 29508 net.cpp:406] lstm1_h_conted_4 <- h_4_lstm1_unit_4_1_split_0
+I1017 23:54:13.185665 29508 net.cpp:406] lstm1_h_conted_4 <- cont_5_lstm1_cont_slice_4_split_0
+I1017 23:54:13.185683 29508 net.cpp:380] lstm1_h_conted_4 -> h_conted_4
+I1017 23:54:13.185751 29508 net.cpp:122] Setting up lstm1_h_conted_4
+I1017 23:54:13.185760 29508 net.cpp:129] Top shape: 1 150 512 (76800)
+I1017 23:54:13.185765 29508 net.cpp:137] Memory required for data: 39033600
+I1017 23:54:13.185770 29508 layer_factory.hpp:77] Creating layer lstm1_transform_5
+I1017 23:54:13.185777 29508 net.cpp:84] Creating Layer lstm1_transform_5
+I1017 23:54:13.185783 29508 net.cpp:406] lstm1_transform_5 <- h_conted_4
+I1017 23:54:13.185792 29508 net.cpp:380] lstm1_transform_5 -> W_hc_h_4
+I1017 23:54:13.199080 29508 net.cpp:122] Setting up lstm1_transform_5
+I1017 23:54:13.199098 29508 net.cpp:129] Top shape: 1 150 2048 (307200)
+I1017 23:54:13.199110 29508 net.cpp:137] Memory required for data: 40262400
+I1017 23:54:13.199116 29508 net.cpp:465] Sharing parameters 'W_hc' owned by layer 'lstm1_transform_1', param index 0
+I1017 23:54:13.199121 29508 layer_factory.hpp:77] Creating layer lstm1_gate_input_5
+I1017 23:54:13.199131 29508 net.cpp:84] Creating Layer lstm1_gate_input_5
+I1017 23:54:13.199136 29508 net.cpp:406] lstm1_gate_input_5 <- W_hc_h_4
+I1017 23:54:13.199141 29508 net.cpp:406] lstm1_gate_input_5 <- W_xc_x_5
+I1017 23:54:13.199151 29508 net.cpp:380] lstm1_gate_input_5 -> gate_input_5
+I1017 23:54:13.199183 29508 net.cpp:122] Setting up lstm1_gate_input_5
+I1017 23:54:13.199193 29508 net.cpp:129] Top shape: 1 150 2048 (307200)
+I1017 23:54:13.199200 29508 net.cpp:137] Memory required for data: 41491200
+I1017 23:54:13.199206 29508 layer_factory.hpp:77] Creating layer lstm1_unit_5
+I1017 23:54:13.199216 29508 net.cpp:84] Creating Layer lstm1_unit_5
+I1017 23:54:13.199223 29508 net.cpp:406] lstm1_unit_5 <- c_4
+I1017 23:54:13.199229 29508 net.cpp:406] lstm1_unit_5 <- gate_input_5
+I1017 23:54:13.199235 29508 net.cpp:406] lstm1_unit_5 <- cont_5_lstm1_cont_slice_4_split_1
+I1017 23:54:13.199241 29508 net.cpp:380] lstm1_unit_5 -> c_5
+I1017 23:54:13.199249 29508 net.cpp:380] lstm1_unit_5 -> h_5
+I1017 23:54:13.199307 29508 net.cpp:122] Setting up lstm1_unit_5
+I1017 23:54:13.199317 29508 net.cpp:129] Top shape: 1 150 512 (76800)
+I1017 23:54:13.199323 29508 net.cpp:129] Top shape: 1 150 512 (76800)
+I1017 23:54:13.199327 29508 net.cpp:137] Memory required for data: 42105600
+I1017 23:54:13.199332 29508 layer_factory.hpp:77] Creating layer h_5_lstm1_unit_5_1_split
+I1017 23:54:13.199338 29508 net.cpp:84] Creating Layer h_5_lstm1_unit_5_1_split
+I1017 23:54:13.199343 29508 net.cpp:406] h_5_lstm1_unit_5_1_split <- h_5
+I1017 23:54:13.199352 29508 net.cpp:380] h_5_lstm1_unit_5_1_split -> h_5_lstm1_unit_5_1_split_0
+I1017 23:54:13.199359 29508 net.cpp:380] h_5_lstm1_unit_5_1_split -> h_5_lstm1_unit_5_1_split_1
+I1017 23:54:13.199399 29508 net.cpp:122] Setting up h_5_lstm1_unit_5_1_split
+I1017 23:54:13.199407 29508 net.cpp:129] Top shape: 1 150 512 (76800)
+I1017 23:54:13.199414 29508 net.cpp:129] Top shape: 1 150 512 (76800)
+I1017 23:54:13.199417 29508 net.cpp:137] Memory required for data: 42720000
+I1017 23:54:13.199424 29508 layer_factory.hpp:77] Creating layer lstm1_h_conted_5
+I1017 23:54:13.199430 29508 net.cpp:84] Creating Layer lstm1_h_conted_5
+I1017 23:54:13.199435 29508 net.cpp:406] lstm1_h_conted_5 <- h_5_lstm1_unit_5_1_split_0
+I1017 23:54:13.199450 29508 net.cpp:406] lstm1_h_conted_5 <- cont_6_lstm1_cont_slice_5_split_0
+I1017 23:54:13.199460 29508 net.cpp:380] lstm1_h_conted_5 -> h_conted_5
+I1017 23:54:13.199527 29508 net.cpp:122] Setting up lstm1_h_conted_5
+I1017 23:54:13.199535 29508 net.cpp:129] Top shape: 1 150 512 (76800)
+I1017 23:54:13.199540 29508 net.cpp:137] Memory required for data: 43027200
+I1017 23:54:13.199544 29508 layer_factory.hpp:77] Creating layer lstm1_transform_6
+I1017 23:54:13.199553 29508 net.cpp:84] Creating Layer lstm1_transform_6
+I1017 23:54:13.199558 29508 net.cpp:406] lstm1_transform_6 <- h_conted_5
+I1017 23:54:13.199573 29508 net.cpp:380] lstm1_transform_6 -> W_hc_h_5
+I1017 23:54:13.212954 29508 net.cpp:122] Setting up lstm1_transform_6
+I1017 23:54:13.212971 29508 net.cpp:129] Top shape: 1 150 2048 (307200)
+I1017 23:54:13.212981 29508 net.cpp:137] Memory required for data: 44256000
+I1017 23:54:13.212987 29508 net.cpp:465] Sharing parameters 'W_hc' owned by layer 'lstm1_transform_1', param index 0
+I1017 23:54:13.212992 29508 layer_factory.hpp:77] Creating layer lstm1_gate_input_6
+I1017 23:54:13.213001 29508 net.cpp:84] Creating Layer lstm1_gate_input_6
+I1017 23:54:13.213007 29508 net.cpp:406] lstm1_gate_input_6 <- W_hc_h_5
+I1017 23:54:13.213013 29508 net.cpp:406] lstm1_gate_input_6 <- W_xc_x_6
+I1017 23:54:13.213021 29508 net.cpp:380] lstm1_gate_input_6 -> gate_input_6
+I1017 23:54:13.213055 29508 net.cpp:122] Setting up lstm1_gate_input_6
+I1017 23:54:13.213075 29508 net.cpp:129] Top shape: 1 150 2048 (307200)
+I1017 23:54:13.213079 29508 net.cpp:137] Memory required for data: 45484800
+I1017 23:54:13.213084 29508 layer_factory.hpp:77] Creating layer lstm1_unit_6
+I1017 23:54:13.213093 29508 net.cpp:84] Creating Layer lstm1_unit_6
+I1017 23:54:13.213099 29508 net.cpp:406] lstm1_unit_6 <- c_5
+I1017 23:54:13.213105 29508 net.cpp:406] lstm1_unit_6 <- gate_input_6
+I1017 23:54:13.213116 29508 net.cpp:406] lstm1_unit_6 <- cont_6_lstm1_cont_slice_5_split_1
+I1017 23:54:13.213124 29508 net.cpp:380] lstm1_unit_6 -> c_6
+I1017 23:54:13.213131 29508 net.cpp:380] lstm1_unit_6 -> h_6
+I1017 23:54:13.213191 29508 net.cpp:122] Setting up lstm1_unit_6
+I1017 23:54:13.213207 29508 net.cpp:129] Top shape: 1 150 512 (76800)
+I1017 23:54:13.213213 29508 net.cpp:129] Top shape: 1 150 512 (76800)
+I1017 23:54:13.213218 29508 net.cpp:137] Memory required for data: 46099200
+I1017 23:54:13.213222 29508 layer_factory.hpp:77] Creating layer h_6_lstm1_unit_6_1_split
+I1017 23:54:13.213229 29508 net.cpp:84] Creating Layer h_6_lstm1_unit_6_1_split
+I1017 23:54:13.213234 29508 net.cpp:406] h_6_lstm1_unit_6_1_split <- h_6
+I1017 23:54:13.213240 29508 net.cpp:380] h_6_lstm1_unit_6_1_split -> h_6_lstm1_unit_6_1_split_0
+I1017 23:54:13.213248 29508 net.cpp:380] h_6_lstm1_unit_6_1_split -> h_6_lstm1_unit_6_1_split_1
+I1017 23:54:13.213290 29508 net.cpp:122] Setting up h_6_lstm1_unit_6_1_split
+I1017 23:54:13.213297 29508 net.cpp:129] Top shape: 1 150 512 (76800)
+I1017 23:54:13.213304 29508 net.cpp:129] Top shape: 1 150 512 (76800)
+I1017 23:54:13.213307 29508 net.cpp:137] Memory required for data: 46713600
+I1017 23:54:13.213312 29508 layer_factory.hpp:77] Creating layer lstm1_h_conted_6
+I1017 23:54:13.213320 29508 net.cpp:84] Creating Layer lstm1_h_conted_6
+I1017 23:54:13.213325 29508 net.cpp:406] lstm1_h_conted_6 <- h_6_lstm1_unit_6_1_split_0
+I1017 23:54:13.213330 29508 net.cpp:406] lstm1_h_conted_6 <- cont_7_lstm1_cont_slice_6_split_0
+I1017 23:54:13.213340 29508 net.cpp:380] lstm1_h_conted_6 -> h_conted_6
+I1017 23:54:13.213413 29508 net.cpp:122] Setting up lstm1_h_conted_6
+I1017 23:54:13.213423 29508 net.cpp:129] Top shape: 1 150 512 (76800)
+I1017 23:54:13.213428 29508 net.cpp:137] Memory required for data: 47020800
+I1017 23:54:13.213433 29508 layer_factory.hpp:77] Creating layer lstm1_transform_7
+I1017 23:54:13.213440 29508 net.cpp:84] Creating Layer lstm1_transform_7
+I1017 23:54:13.213446 29508 net.cpp:406] lstm1_transform_7 <- h_conted_6
+I1017 23:54:13.213454 29508 net.cpp:380] lstm1_transform_7 -> W_hc_h_6
+I1017 23:54:13.226805 29508 net.cpp:122] Setting up lstm1_transform_7
+I1017 23:54:13.226824 29508 net.cpp:129] Top shape: 1 150 2048 (307200)
+I1017 23:54:13.226835 29508 net.cpp:137] Memory required for data: 48249600
+I1017 23:54:13.226845 29508 net.cpp:465] Sharing parameters 'W_hc' owned by layer 'lstm1_transform_1', param index 0
+I1017 23:54:13.226851 29508 layer_factory.hpp:77] Creating layer lstm1_gate_input_7
+I1017 23:54:13.226860 29508 net.cpp:84] Creating Layer lstm1_gate_input_7
+I1017 23:54:13.226864 29508 net.cpp:406] lstm1_gate_input_7 <- W_hc_h_6
+I1017 23:54:13.226871 29508 net.cpp:406] lstm1_gate_input_7 <- W_xc_x_7
+I1017 23:54:13.226878 29508 net.cpp:380] lstm1_gate_input_7 -> gate_input_7
+I1017 23:54:13.226912 29508 net.cpp:122] Setting up lstm1_gate_input_7
+I1017 23:54:13.226922 29508 net.cpp:129] Top shape: 1 150 2048 (307200)
+I1017 23:54:13.226927 29508 net.cpp:137] Memory required for data: 49478400
+I1017 23:54:13.226932 29508 layer_factory.hpp:77] Creating layer lstm1_unit_7
+I1017 23:54:13.226938 29508 net.cpp:84] Creating Layer lstm1_unit_7
+I1017 23:54:13.226943 29508 net.cpp:406] lstm1_unit_7 <- c_6
+I1017 23:54:13.226950 29508 net.cpp:406] lstm1_unit_7 <- gate_input_7
+I1017 23:54:13.226956 29508 net.cpp:406] lstm1_unit_7 <- cont_7_lstm1_cont_slice_6_split_1
+I1017 23:54:13.226963 29508 net.cpp:380] lstm1_unit_7 -> c_7
+I1017 23:54:13.226970 29508 net.cpp:380] lstm1_unit_7 -> h_7
+I1017 23:54:13.227028 29508 net.cpp:122] Setting up lstm1_unit_7
+I1017 23:54:13.227038 29508 net.cpp:129] Top shape: 1 150 512 (76800)
+I1017 23:54:13.227044 29508 net.cpp:129] Top shape: 1 150 512 (76800)
+I1017 23:54:13.227049 29508 net.cpp:137] Memory required for data: 50092800
+I1017 23:54:13.227054 29508 layer_factory.hpp:77] Creating layer h_7_lstm1_unit_7_1_split
+I1017 23:54:13.227062 29508 net.cpp:84] Creating Layer h_7_lstm1_unit_7_1_split
+I1017 23:54:13.227067 29508 net.cpp:406] h_7_lstm1_unit_7_1_split <- h_7
+I1017 23:54:13.227074 29508 net.cpp:380] h_7_lstm1_unit_7_1_split -> h_7_lstm1_unit_7_1_split_0
+I1017 23:54:13.227082 29508 net.cpp:380] h_7_lstm1_unit_7_1_split -> h_7_lstm1_unit_7_1_split_1
+I1017 23:54:13.227120 29508 net.cpp:122] Setting up h_7_lstm1_unit_7_1_split
+I1017 23:54:13.227128 29508 net.cpp:129] Top shape: 1 150 512 (76800)
+I1017 23:54:13.227134 29508 net.cpp:129] Top shape: 1 150 512 (76800)
+I1017 23:54:13.227139 29508 net.cpp:137] Memory required for data: 50707200
+I1017 23:54:13.227144 29508 layer_factory.hpp:77] Creating layer lstm1_h_conted_7
+I1017 23:54:13.227154 29508 net.cpp:84] Creating Layer lstm1_h_conted_7
+I1017 23:54:13.227159 29508 net.cpp:406] lstm1_h_conted_7 <- h_7_lstm1_unit_7_1_split_0
+I1017 23:54:13.227164 29508 net.cpp:406] lstm1_h_conted_7 <- cont_8_lstm1_cont_slice_7_split_0
+I1017 23:54:13.227171 29508 net.cpp:380] lstm1_h_conted_7 -> h_conted_7
+I1017 23:54:13.227238 29508 net.cpp:122] Setting up lstm1_h_conted_7
+I1017 23:54:13.227248 29508 net.cpp:129] Top shape: 1 150 512 (76800)
+I1017 23:54:13.227252 29508 net.cpp:137] Memory required for data: 51014400
+I1017 23:54:13.227257 29508 layer_factory.hpp:77] Creating layer lstm1_transform_8
+I1017 23:54:13.227267 29508 net.cpp:84] Creating Layer lstm1_transform_8
+I1017 23:54:13.227272 29508 net.cpp:406] lstm1_transform_8 <- h_conted_7
+I1017 23:54:13.227279 29508 net.cpp:380] lstm1_transform_8 -> W_hc_h_7
+I1017 23:54:13.240972 29508 net.cpp:122] Setting up lstm1_transform_8
+I1017 23:54:13.240993 29508 net.cpp:129] Top shape: 1 150 2048 (307200)
+I1017 23:54:13.240998 29508 net.cpp:137] Memory required for data: 52243200
+I1017 23:54:13.241005 29508 net.cpp:465] Sharing parameters 'W_hc' owned by layer 'lstm1_transform_1', param index 0
+I1017 23:54:13.241010 29508 layer_factory.hpp:77] Creating layer lstm1_gate_input_8
+I1017 23:54:13.241019 29508 net.cpp:84] Creating Layer lstm1_gate_input_8
+I1017 23:54:13.241025 29508 net.cpp:406] lstm1_gate_input_8 <- W_hc_h_7
+I1017 23:54:13.241032 29508 net.cpp:406] lstm1_gate_input_8 <- W_xc_x_8
+I1017 23:54:13.241040 29508 net.cpp:380] lstm1_gate_input_8 -> gate_input_8
+I1017 23:54:13.241077 29508 net.cpp:122] Setting up lstm1_gate_input_8
+I1017 23:54:13.241086 29508 net.cpp:129] Top shape: 1 150 2048 (307200)
+I1017 23:54:13.241089 29508 net.cpp:137] Memory required for data: 53472000
+I1017 23:54:13.241094 29508 layer_factory.hpp:77] Creating layer lstm1_unit_8
+I1017 23:54:13.241108 29508 net.cpp:84] Creating Layer lstm1_unit_8
+I1017 23:54:13.241114 29508 net.cpp:406] lstm1_unit_8 <- c_7
+I1017 23:54:13.241120 29508 net.cpp:406] lstm1_unit_8 <- gate_input_8
+I1017 23:54:13.241127 29508 net.cpp:406] lstm1_unit_8 <- cont_8_lstm1_cont_slice_7_split_1
+I1017 23:54:13.241133 29508 net.cpp:380] lstm1_unit_8 -> c_8
+I1017 23:54:13.241142 29508 net.cpp:380] lstm1_unit_8 -> h_8
+I1017 23:54:13.241196 29508 net.cpp:122] Setting up lstm1_unit_8
+I1017 23:54:13.241204 29508 net.cpp:129] Top shape: 1 150 512 (76800)
+I1017 23:54:13.241209 29508 net.cpp:129] Top shape: 1 150 512 (76800)
+I1017 23:54:13.241214 29508 net.cpp:137] Memory required for data: 54086400
+I1017 23:54:13.241219 29508 layer_factory.hpp:77] Creating layer lstm1_
+I1017 23:54:13.241225 29508 net.cpp:84] Creating Layer lstm1_
+I1017 23:54:13.241230 29508 net.cpp:406] lstm1_ <- c_8
+I1017 23:54:13.241238 29508 net.cpp:380] lstm1_ -> c_T
+I1017 23:54:13.241262 29508 net.cpp:122] Setting up lstm1_
+I1017 23:54:13.241269 29508 net.cpp:129] Top shape: 1 150 512 (76800)
+I1017 23:54:13.241274 29508 net.cpp:137] Memory required for data: 54393600
+I1017 23:54:13.241278 29508 layer_factory.hpp:77] Creating layer lstm1_h_concat
+I1017 23:54:13.241288 29508 net.cpp:84] Creating Layer lstm1_h_concat
+I1017 23:54:13.241293 29508 net.cpp:406] lstm1_h_concat <- h_1_lstm1_unit_1_1_split_1
+I1017 23:54:13.241299 29508 net.cpp:406] lstm1_h_concat <- h_2_lstm1_unit_2_1_split_1
+I1017 23:54:13.241305 29508 net.cpp:406] lstm1_h_concat <- h_3_lstm1_unit_3_1_split_1
+I1017 23:54:13.241310 29508 net.cpp:406] lstm1_h_concat <- h_4_lstm1_unit_4_1_split_1
+I1017 23:54:13.241315 29508 net.cpp:406] lstm1_h_concat <- h_5_lstm1_unit_5_1_split_1
+I1017 23:54:13.241322 29508 net.cpp:406] lstm1_h_concat <- h_6_lstm1_unit_6_1_split_1
+I1017 23:54:13.241325 29508 net.cpp:406] lstm1_h_concat <- h_7_lstm1_unit_7_1_split_1
+I1017 23:54:13.241330 29508 net.cpp:406] lstm1_h_concat <- h_8
+I1017 23:54:13.241339 29508 net.cpp:380] lstm1_h_concat -> h
+I1017 23:54:13.241366 29508 net.cpp:122] Setting up lstm1_h_concat
+I1017 23:54:13.241376 29508 net.cpp:129] Top shape: 8 150 512 (614400)
+I1017 23:54:13.241380 29508 net.cpp:137] Memory required for data: 56851200
+I1017 23:54:13.241385 29508 layer_factory.hpp:77] Creating layer h_pseudoloss
+I1017 23:54:13.241392 29508 net.cpp:84] Creating Layer h_pseudoloss
+I1017 23:54:13.241397 29508 net.cpp:406] h_pseudoloss <- h
+I1017 23:54:13.241405 29508 net.cpp:380] h_pseudoloss -> h_pseudoloss
+I1017 23:54:13.243446 29508 net.cpp:122] Setting up h_pseudoloss
+I1017 23:54:13.243463 29508 net.cpp:129] Top shape: (1)
+I1017 23:54:13.243468 29508 net.cpp:132]     with loss weight 1
+I1017 23:54:13.243482 29508 net.cpp:137] Memory required for data: 56851204
+I1017 23:54:13.243487 29508 net.cpp:198] h_pseudoloss needs backward computation.
+I1017 23:54:13.243494 29508 net.cpp:198] lstm1_h_concat needs backward computation.
+I1017 23:54:13.243499 29508 net.cpp:200] lstm1_ does not need backward computation.
+I1017 23:54:13.243505 29508 net.cpp:198] lstm1_unit_8 needs backward computation.
+I1017 23:54:13.243510 29508 net.cpp:198] lstm1_gate_input_8 needs backward computation.
+I1017 23:54:13.243515 29508 net.cpp:198] lstm1_transform_8 needs backward computation.
+I1017 23:54:13.243520 29508 net.cpp:198] lstm1_h_conted_7 needs backward computation.
+I1017 23:54:13.243526 29508 net.cpp:198] h_7_lstm1_unit_7_1_split needs backward computation.
+I1017 23:54:13.243531 29508 net.cpp:198] lstm1_unit_7 needs backward computation.
+I1017 23:54:13.243540 29508 net.cpp:198] lstm1_gate_input_7 needs backward computation.
+I1017 23:54:13.243546 29508 net.cpp:198] lstm1_transform_7 needs backward computation.
+I1017 23:54:13.243551 29508 net.cpp:198] lstm1_h_conted_6 needs backward computation.
+I1017 23:54:13.243556 29508 net.cpp:198] h_6_lstm1_unit_6_1_split needs backward computation.
+I1017 23:54:13.243561 29508 net.cpp:198] lstm1_unit_6 needs backward computation.
+I1017 23:54:13.243567 29508 net.cpp:198] lstm1_gate_input_6 needs backward computation.
+I1017 23:54:13.243572 29508 net.cpp:198] lstm1_transform_6 needs backward computation.
+I1017 23:54:13.243584 29508 net.cpp:198] lstm1_h_conted_5 needs backward computation.
+I1017 23:54:13.243590 29508 net.cpp:198] h_5_lstm1_unit_5_1_split needs backward computation.
+I1017 23:54:13.243595 29508 net.cpp:198] lstm1_unit_5 needs backward computation.
+I1017 23:54:13.243602 29508 net.cpp:198] lstm1_gate_input_5 needs backward computation.
+I1017 23:54:13.243607 29508 net.cpp:198] lstm1_transform_5 needs backward computation.
+I1017 23:54:13.243611 29508 net.cpp:198] lstm1_h_conted_4 needs backward computation.
+I1017 23:54:13.243618 29508 net.cpp:198] h_4_lstm1_unit_4_1_split needs backward computation.
+I1017 23:54:13.243623 29508 net.cpp:198] lstm1_unit_4 needs backward computation.
+I1017 23:54:13.243628 29508 net.cpp:198] lstm1_gate_input_4 needs backward computation.
+I1017 23:54:13.243633 29508 net.cpp:198] lstm1_transform_4 needs backward computation.
+I1017 23:54:13.243638 29508 net.cpp:198] lstm1_h_conted_3 needs backward computation.
+I1017 23:54:13.243644 29508 net.cpp:198] h_3_lstm1_unit_3_1_split needs backward computation.
+I1017 23:54:13.243649 29508 net.cpp:198] lstm1_unit_3 needs backward computation.
+I1017 23:54:13.243655 29508 net.cpp:198] lstm1_gate_input_3 needs backward computation.
+I1017 23:54:13.243661 29508 net.cpp:198] lstm1_transform_3 needs backward computation.
+I1017 23:54:13.243671 29508 net.cpp:198] lstm1_h_conted_2 needs backward computation.
+I1017 23:54:13.243677 29508 net.cpp:198] h_2_lstm1_unit_2_1_split needs backward computation.
+I1017 23:54:13.243682 29508 net.cpp:198] lstm1_unit_2 needs backward computation.
+I1017 23:54:13.243688 29508 net.cpp:198] lstm1_gate_input_2 needs backward computation.
+I1017 23:54:13.243695 29508 net.cpp:198] lstm1_transform_2 needs backward computation.
+I1017 23:54:13.243700 29508 net.cpp:198] lstm1_h_conted_1 needs backward computation.
+I1017 23:54:13.243705 29508 net.cpp:198] h_1_lstm1_unit_1_1_split needs backward computation.
+I1017 23:54:13.243710 29508 net.cpp:198] lstm1_unit_1 needs backward computation.
+I1017 23:54:13.243716 29508 net.cpp:198] lstm1_gate_input_1 needs backward computation.
+I1017 23:54:13.243722 29508 net.cpp:198] lstm1_transform_1 needs backward computation.
+I1017 23:54:13.243727 29508 net.cpp:200] lstm1_h_conted_0 does not need backward computation.
+I1017 23:54:13.243733 29508 net.cpp:198] lstm1_W_xc_x_slice needs backward computation.
+I1017 23:54:13.243739 29508 net.cpp:198] lstm1_x_transform needs backward computation.
+I1017 23:54:13.243752 29508 net.cpp:200] cont_8_lstm1_cont_slice_7_split does not need backward computation.
+I1017 23:54:13.243757 29508 net.cpp:200] cont_7_lstm1_cont_slice_6_split does not need backward computation.
+I1017 23:54:13.243763 29508 net.cpp:200] cont_6_lstm1_cont_slice_5_split does not need backward computation.
+I1017 23:54:13.243768 29508 net.cpp:200] cont_5_lstm1_cont_slice_4_split does not need backward computation.
+I1017 23:54:13.243774 29508 net.cpp:200] cont_4_lstm1_cont_slice_3_split does not need backward computation.
+I1017 23:54:13.243780 29508 net.cpp:200] cont_3_lstm1_cont_slice_2_split does not need backward computation.
+I1017 23:54:13.243785 29508 net.cpp:200] cont_2_lstm1_cont_slice_1_split does not need backward computation.
+I1017 23:54:13.243791 29508 net.cpp:200] cont_1_lstm1_cont_slice_0_split does not need backward computation.
+I1017 23:54:13.243798 29508 net.cpp:200] lstm1_cont_slice does not need backward computation.
+I1017 23:54:13.243804 29508 net.cpp:200] lstm1_ does not need backward computation.
+I1017 23:54:13.243809 29508 net.cpp:200] lstm1_ does not need backward computation.
+I1017 23:54:13.243813 29508 net.cpp:242] This network produces output c_T
+I1017 23:54:13.243819 29508 net.cpp:242] This network produces output h_pseudoloss
+I1017 23:54:13.251046 29508 net.cpp:255] Network initialization done.
+I1017 23:54:13.251183 29508 recurrent_layer.cpp:150] Adding parameter 0: W_xc
+I1017 23:54:13.251193 29508 recurrent_layer.cpp:150] Adding parameter 1: b_c
+I1017 23:54:13.251196 29508 recurrent_layer.cpp:150] Adding parameter 2: W_hc
+I1017 23:54:13.252554 29508 net.cpp:122] Setting up lstm1
+I1017 23:54:13.252574 29508 net.cpp:129] Top shape: 8 150 512 (614400)
+I1017 23:54:13.252579 29508 net.cpp:137] Memory required for data: 17315656200
+I1017 23:54:13.252595 29508 layer_factory.hpp:77] Creating layer lstm1-drop
+I1017 23:54:13.252604 29508 net.cpp:84] Creating Layer lstm1-drop
+I1017 23:54:13.252610 29508 net.cpp:406] lstm1-drop <- lstm1
+I1017 23:54:13.252619 29508 net.cpp:380] lstm1-drop -> lstm1-drop
+I1017 23:54:13.252667 29508 net.cpp:122] Setting up lstm1-drop
+I1017 23:54:13.252684 29508 net.cpp:129] Top shape: 8 150 512 (614400)
+I1017 23:54:13.252688 29508 net.cpp:137] Memory required for data: 17318113800
+I1017 23:54:13.252693 29508 layer_factory.hpp:77] Creating layer fc-final
+I1017 23:54:13.252702 29508 net.cpp:84] Creating Layer fc-final
+I1017 23:54:13.252708 29508 net.cpp:406] fc-final <- lstm1-drop
+I1017 23:54:13.252717 29508 net.cpp:380] fc-final -> fc-final
+I1017 23:54:13.253069 29508 net.cpp:122] Setting up fc-final
+I1017 23:54:13.253080 29508 net.cpp:129] Top shape: 8 150 10 (12000)
+I1017 23:54:13.253085 29508 net.cpp:137] Memory required for data: 17318161800
+I1017 23:54:13.253093 29508 layer_factory.hpp:77] Creating layer fc-final_fc-final_0_split
+I1017 23:54:13.253103 29508 net.cpp:84] Creating Layer fc-final_fc-final_0_split
+I1017 23:54:13.253108 29508 net.cpp:406] fc-final_fc-final_0_split <- fc-final
+I1017 23:54:13.253114 29508 net.cpp:380] fc-final_fc-final_0_split -> fc-final_fc-final_0_split_0
+I1017 23:54:13.253123 29508 net.cpp:380] fc-final_fc-final_0_split -> fc-final_fc-final_0_split_1
+I1017 23:54:13.253165 29508 net.cpp:122] Setting up fc-final_fc-final_0_split
+I1017 23:54:13.253172 29508 net.cpp:129] Top shape: 8 150 10 (12000)
+I1017 23:54:13.253178 29508 net.cpp:129] Top shape: 8 150 10 (12000)
+I1017 23:54:13.253182 29508 net.cpp:137] Memory required for data: 17318257800
+I1017 23:54:13.253187 29508 layer_factory.hpp:77] Creating layer loss
+I1017 23:54:13.253196 29508 net.cpp:84] Creating Layer loss
+I1017 23:54:13.253201 29508 net.cpp:406] loss <- fc-final_fc-final_0_split_0
+I1017 23:54:13.253211 29508 net.cpp:406] loss <- reshape-label_label_tran_0_split_0
+I1017 23:54:13.253218 29508 net.cpp:380] loss -> loss
+I1017 23:54:13.253243 29508 layer_factory.hpp:77] Creating layer loss
+I1017 23:54:13.253352 29508 net.cpp:122] Setting up loss
+I1017 23:54:13.253362 29508 net.cpp:129] Top shape: (1)
+I1017 23:54:13.253368 29508 net.cpp:132]     with loss weight 1
+I1017 23:54:13.253376 29508 net.cpp:137] Memory required for data: 17318257804
+I1017 23:54:13.253381 29508 layer_factory.hpp:77] Creating layer accuracy
+I1017 23:54:13.253391 29508 net.cpp:84] Creating Layer accuracy
+I1017 23:54:13.253396 29508 net.cpp:406] accuracy <- fc-final_fc-final_0_split_1
+I1017 23:54:13.253402 29508 net.cpp:406] accuracy <- reshape-label_label_tran_0_split_1
+I1017 23:54:13.253408 29508 net.cpp:380] accuracy -> accuracy
+I1017 23:54:13.253418 29508 net.cpp:122] Setting up accuracy
+I1017 23:54:13.253424 29508 net.cpp:129] Top shape: (1)
+I1017 23:54:13.253429 29508 net.cpp:137] Memory required for data: 17318257808
+I1017 23:54:13.253434 29508 net.cpp:200] accuracy does not need backward computation.
+I1017 23:54:13.253439 29508 net.cpp:198] loss needs backward computation.
+I1017 23:54:13.253444 29508 net.cpp:198] fc-final_fc-final_0_split needs backward computation.
+I1017 23:54:13.253449 29508 net.cpp:198] fc-final needs backward computation.
+I1017 23:54:13.253454 29508 net.cpp:198] lstm1-drop needs backward computation.
+I1017 23:54:13.253459 29508 net.cpp:198] lstm1 needs backward computation.
+I1017 23:54:13.253465 29508 net.cpp:198] conv5_3_tran needs backward computation.
+I1017 23:54:13.253470 29508 net.cpp:198] conv5_3_re needs backward computation.
+I1017 23:54:13.253475 29508 net.cpp:198] relu5_3 needs backward computation.
+I1017 23:54:13.253480 29508 net.cpp:198] conv5_3 needs backward computation.
+I1017 23:54:13.253486 29508 net.cpp:198] relu5_2 needs backward computation.
+I1017 23:54:13.253491 29508 net.cpp:198] conv5_2 needs backward computation.
+I1017 23:54:13.253496 29508 net.cpp:198] relu5_1 needs backward computation.
+I1017 23:54:13.253501 29508 net.cpp:198] conv5_1 needs backward computation.
+I1017 23:54:13.253506 29508 net.cpp:198] pool4 needs backward computation.
+I1017 23:54:13.253512 29508 net.cpp:198] relu4_3 needs backward computation.
+I1017 23:54:13.253517 29508 net.cpp:198] conv4_3 needs backward computation.
+I1017 23:54:13.253569 29508 net.cpp:198] relu4_2 needs backward computation.
+I1017 23:54:13.253574 29508 net.cpp:198] conv4_2 needs backward computation.
+I1017 23:54:13.253607 29508 net.cpp:198] relu4_1 needs backward computation.
+I1017 23:54:13.253612 29508 net.cpp:198] conv4_1 needs backward computation.
+I1017 23:54:13.253618 29508 net.cpp:198] pool3 needs backward computation.
+I1017 23:54:13.253623 29508 net.cpp:198] relu3_3 needs backward computation.
+I1017 23:54:13.253628 29508 net.cpp:198] conv3_3 needs backward computation.
+I1017 23:54:13.253633 29508 net.cpp:198] relu3_2 needs backward computation.
+I1017 23:54:13.253638 29508 net.cpp:198] conv3_2 needs backward computation.
+I1017 23:54:13.253643 29508 net.cpp:198] relu3_1 needs backward computation.
+I1017 23:54:13.253649 29508 net.cpp:198] conv3_1 needs backward computation.
+I1017 23:54:13.253655 29508 net.cpp:198] pool2 needs backward computation.
+I1017 23:54:13.253660 29508 net.cpp:198] relu2_2 needs backward computation.
+I1017 23:54:13.253666 29508 net.cpp:198] conv2_2 needs backward computation.
+I1017 23:54:13.253671 29508 net.cpp:198] relu2_1 needs backward computation.
+I1017 23:54:13.253715 29508 net.cpp:198] conv2_1 needs backward computation.
+I1017 23:54:13.253722 29508 net.cpp:198] pool1 needs backward computation.
+I1017 23:54:13.253727 29508 net.cpp:198] relu1_2 needs backward computation.
+I1017 23:54:13.253732 29508 net.cpp:198] conv1_2 needs backward computation.
+I1017 23:54:13.253737 29508 net.cpp:198] relu1_1 needs backward computation.
+I1017 23:54:13.253742 29508 net.cpp:198] conv1_1 needs backward computation.
+I1017 23:54:13.253748 29508 net.cpp:200] reshape-label_label_tran_0_split does not need backward computation.
+I1017 23:54:13.253754 29508 net.cpp:200] label_tran does not need backward computation.
+I1017 23:54:13.253760 29508 net.cpp:200] Silence does not need backward computation.
+I1017 23:54:13.253767 29508 net.cpp:200] label_data_1_split does not need backward computation.
+I1017 23:54:13.253772 29508 net.cpp:200] data does not need backward computation.
+I1017 23:54:13.253777 29508 net.cpp:242] This network produces output accuracy
+I1017 23:54:13.253784 29508 net.cpp:242] This network produces output loss
+I1017 23:54:13.253818 29508 net.cpp:255] Network initialization done.
+I1017 23:54:13.254024 29508 solver.cpp:56] Solver scaffolding done.
+I1017 23:54:13.255285 29508 caffe.cpp:155] Finetuning from ./Model/ft_vgg/vgg16_lsun_plc_model3_87.57_fullconv.caffemodel
+[libprotobuf WARNING google/protobuf/io/coded_stream.cc:505] Reading dangerously large protocol message.  If the message turns out to be larger than 2147483647 bytes, parsing will be halted for security reasons.  To increase the limit (or to disable these warnings), see CodedInputStream::SetTotalBytesLimit() in google/protobuf/io/coded_stream.h.
+[libprotobuf WARNING google/protobuf/io/coded_stream.cc:78] The total number of bytes read was 537208983
+I1017 23:54:14.254844 29508 net.cpp:744] Ignoring source layer input
+I1017 23:54:14.272799 29508 net.cpp:744] Ignoring source layer pool5
+I1017 23:54:14.272822 29508 net.cpp:744] Ignoring source layer fc6-conv
+I1017 23:54:14.272828 29508 net.cpp:744] Ignoring source layer fc7-conv
+I1017 23:54:14.272833 29508 net.cpp:744] Ignoring source layer fc8-conv
+[libprotobuf WARNING google/protobuf/io/coded_stream.cc:505] Reading dangerously large protocol message.  If the message turns out to be larger than 2147483647 bytes, parsing will be halted for security reasons.  To increase the limit (or to disable these warnings), see CodedInputStream::SetTotalBytesLimit() in google/protobuf/io/coded_stream.h.
+[libprotobuf WARNING google/protobuf/io/coded_stream.cc:78] The total number of bytes read was 537208983
+I1017 23:54:15.232753 29508 net.cpp:744] Ignoring source layer input
+I1017 23:54:15.249145 29508 net.cpp:744] Ignoring source layer pool5
+I1017 23:54:15.249186 29508 net.cpp:744] Ignoring source layer fc6-conv
+I1017 23:54:15.249191 29508 net.cpp:744] Ignoring source layer fc7-conv
+I1017 23:54:15.249197 29508 net.cpp:744] Ignoring source layer fc8-conv
+I1017 23:54:15.252336 29508 caffe.cpp:248] Starting Optimization
+I1017 23:54:15.252363 29508 solver.cpp:272] Solving VGG-Places365
+I1017 23:54:15.252369 29508 solver.cpp:273] Learning Rate Policy: step
+I1017 23:54:15.263183 29508 solver.cpp:330] Iteration 0, Testing net (#0)
+I1017 23:54:48.804222 29508 solver.cpp:397]     Test net output #0: accuracy = 0.11275
+I1017 23:54:48.804302 29508 solver.cpp:397]     Test net output #1: loss = 2.30014 (* 1 = 2.30014 loss)
+setup (8, 5, 512)
+setup (8, 150, 512)
+Traceback (most recent call last):
+  File "/home/deep/LSTM-SCENE/train_conv_spp/data_preparation_sort_max_clip.py", line 72, in backward
+    Diff_rec[:,i,:]=Diff[Feat_sort_index[:,i],i,:]
+IndexError: index 290 is out of bounds for axis 0 with size 196
